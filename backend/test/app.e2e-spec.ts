@@ -4,6 +4,7 @@ import request from 'supertest';
 import { App } from 'supertest/types.js';
 import { AppModule } from './../src/app.module.js';
 import { HttpExceptionFilter } from './../src/common/filters/http-exception.filter.js';
+import { PrismaService } from './../src/prisma/prisma.service.js';
 
 describe('App (e2e)', () => {
   let app: INestApplication<App>;
@@ -11,7 +12,13 @@ describe('App (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue({
+        $connect: vitest.fn().mockResolvedValue(undefined),
+        $disconnect: vitest.fn().mockResolvedValue(undefined),
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(

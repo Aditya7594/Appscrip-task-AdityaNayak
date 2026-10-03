@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  slug     String    @unique
+  name     String
+  products Product[]
+}
+
+model Product {
+  id          Int            @id @default(autoincrement())
+  slug        String         @unique
+  title       String
+  description String
+  price       Decimal        @db.Decimal(10, 2)
+  rating      Float          @default(0)
+  ratingCount Int            @default(0)
+  categoryId  Int
+  category    Category       @relation(fields: [categoryId], references: [id])
+  images      ProductImage[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Category + price filters
+  @@index([categoryId, price])
+  // Price sort and range
+  @@index([price])
+  // Newest sort
+  @@index([createdAt])
+  // Popular sort
+  @@index([ratingCount])
+  // Recommended sort and minRating
+  @@index([rating])
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String
+  position  Int     @default(0)
+
+  @@unique([productId, position])
+}
