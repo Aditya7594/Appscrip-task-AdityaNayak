@@ -132,9 +132,137 @@
           </div>
         </div>
 
-        <aside class="filters" aria-labelledby="filters-heading">
-          <h2 id="filters-heading" class="visually-hidden">Filters</h2>
-          <!-- filter sidebar -->
+        <aside class="filters" id="filters" aria-labelledby="filters-title">
+          <h2 id="filters-title" class="visually-hidden">Filters</h2>
+
+          <!-- Customizable row -->
+          <div class="filters__customizable">
+            <label class="check check--customizable">
+              <input type="checkbox" name="customizable">
+              <span class="check__label">Customizable</span>
+            </label>
+          </div>
+
+          <hr class="filter-divider">
+
+          <!-- 1. Ideal for (Expanded) -->
+          <fieldset class="filter-group filter-group--open">
+            <legend class="filter-group__title">
+              <span>Ideal for</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+            <div class="filter-group__content">
+              <button class="filter-group__reset" type="button">Unselect all</button>
+              <div class="filter-group__options">
+                <label class="check">
+                  <input type="checkbox" name="ideal-for" value="men">
+                  <span class="check__label">Men</span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" name="ideal-for" value="women">
+                  <span class="check__label">Women</span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" name="ideal-for" value="baby-and-kids">
+                  <span class="check__label">Baby &amp; Kids</span>
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <hr class="filter-divider">
+
+          <!-- 2. Occasion -->
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              <span>Occasion</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+          </fieldset>
+
+          <hr class="filter-divider">
+
+          <!-- 3. Work -->
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              <span>Work</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+          </fieldset>
+
+          <hr class="filter-divider">
+
+          <!-- 4. Fabric -->
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              <span>Fabric</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+          </fieldset>
+
+          <hr class="filter-divider">
+
+          <!-- 5. Segment -->
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              <span>Segment</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+          </fieldset>
+
+          <hr class="filter-divider">
+
+          <!-- 6. Suitable for -->
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              <span>Suitable for</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+          </fieldset>
+
+          <hr class="filter-divider">
+
+          <!-- 7. Raw materials -->
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              <span>Raw materials</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+          </fieldset>
+
+          <hr class="filter-divider">
+
+          <!-- 8. Pattern -->
+          <fieldset class="filter-group">
+            <legend class="filter-group__title">
+              <span>Pattern</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </legend>
+            <p class="filter-group__summary">All</p>
+          </fieldset>
         </aside>
 
         <section class="results" aria-labelledby="products-heading">
