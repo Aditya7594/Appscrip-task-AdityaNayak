@@ -196,3 +196,218 @@ body {
     padding-inline: 96px;
   }
 }
+
+/* ==========================================================================
+   SVG ICONS
+   ========================================================================== */
+
+.icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  color: var(--color-icon);
+  fill: none;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.icon--strip {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+.icon--chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--color-icon);
+}
+
+.icon--tool {
+  width: 24px;
+  height: 24px;
+  color: var(--color-icon);
+}
+
+/* ==========================================================================
+   HEADER (DESKTOP)
+   ========================================================================== */
+
+.site-header {
+  width: 100%;
+  background-color: var(--color-white);
+}
+
+/* Top Strip (32px tall, Black) */
+.top-strip {
+  height: 32px;
+  background-color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 24px;
+}
+
+@media (min-width: 1440px) {
+  .top-strip {
+    padding-inline: calc((100% - 1440px) / 2 + 274px);
+  }
+}
+
+.top-strip__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-10);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-strip);
+  font-weight: 400;
+  color: var(--color-primary);
+  letter-spacing: var(--letter-spacing-wide);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Main Header (188px tall, White, 1px bottom border) */
+.header-main {
+  position: relative;
+  height: 188px;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-hairline);
+  width: 100%;
+}
+
+/* Brand Mark: left 96, top 40 */
+.brand-mark {
+  position: absolute;
+  top: 40px;
+  left: 96px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-black);
+}
+
+@media (min-width: 1440px) {
+  .brand-mark {
+    left: calc((100% - 1440px) / 2 + 96px);
+  }
+}
+
+.brand-mark__icon {
+  width: 36px;
+  height: 36px;
+  display: block;
+}
+
+/* Logo Wordmark: Inter 800 36px, letter-spacing 1px, centered horizontally, y~58 vertically */
+.logo {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-logo);
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 44px;
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-black);
+  text-decoration: none;
+  text-align: center;
+}
+
+/* Header Tools: right 96, top 46, gap 24 */
+.header-tools {
+  position: absolute;
+  top: 46px;
+  right: 96px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-24);
+}
+
+@media (min-width: 1440px) {
+  .header-tools {
+    right: calc((100% - 1440px) / 2 + 96px);
+  }
+}
+
+.header-tools__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-icon);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.header-tools__item:hover,
+.header-tools__item:focus-visible {
+  color: var(--color-text);
+}
+
+/* Language Switch: ENG + chevron */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-secondary);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-wide);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.lang-switch:hover,
+.lang-switch:focus-visible {
+  color: var(--color-black);
+}
+
+/* Primary Navigation: centered at 140px from header top, 20px Bold uppercase, letter-spacing 1px, gap 64 */
+.header-nav {
+  position: absolute;
+  top: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+}
+
+.header-nav__list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-64);
+}
+
+.header-nav__item {
+  display: flex;
+}
+
+.header-nav__link {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-nav);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-text);
+  text-decoration: none;
+  line-height: 1.2;
+  transition: color 0.15s ease-in-out;
+}
+
+.header-nav__link:hover,
+.header-nav__link:focus-visible {
+  text-decoration: underline 2px solid currentColor;
+  text-underline-offset: 6px;
+}
+

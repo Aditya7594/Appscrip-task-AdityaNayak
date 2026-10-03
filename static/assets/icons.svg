@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="search" viewBox="0 0 24 24">
+    <path d="M11.5 21C16.7467 21 21 16.7465 21 11.5C21 6.25311 16.7467 2 11.5 2C6.25329 2 2 6.25311 2 11.5C2 16.7465 6.25329 21 11.5 21Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M22 22L20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="heart" viewBox="0 0 24 24">
+    <path d="M12.62 20.8116C12.28 20.9316 11.72 20.9316 11.38 20.8116C8.48 19.8216 2 15.6916 2 8.69156C2 5.60156 4.49 3.10156 7.56 3.10156C9.38 3.10156 10.99 3.98156 12 5.34156C13.01 3.98156 14.63 3.10156 16.44 3.10156C19.51 3.10156 22 5.60156 22 8.69156C22 15.6916 15.52 19.8216 12.62 20.8116Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+
+  <symbol id="bag" viewBox="0 0 24 24">
+    <path d="M8.396 6.5H15.596C18.996 6.5 19.336 8.09 19.566 10.03L20.466 17.53C20.756 19.99 19.996 22 16.496 22H7.506C3.996 22 3.236 19.99 3.536 17.53L4.436 10.03C4.656 8.09 4.996 6.5 8.396 6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M8 8V4.5C8 3 9 2 10.5 2H13.5C15 2 16 3 16 4.5V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M20.41 17.0312H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="profile" viewBox="0 0 24 24">
+    <path d="M12.162 10.87C12.062 10.86 11.942 10.86 11.832 10.87C9.452 10.79 7.562 8.84 7.562 6.44C7.562 3.99 9.543 2 12.003 2C14.453 2 16.443 3.99 16.443 6.44C16.433 8.84 14.543 10.79 12.162 10.87Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M7.159 14.56C4.739 16.18 4.739 18.82 7.159 20.43C9.909 22.27 14.419 22.27 17.169 20.43C19.589 18.81 19.589 16.17 17.169 14.56C14.429 12.73 9.919 12.73 7.159 14.56Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+
+  <symbol id="chevron" viewBox="0 0 16 16">
+    <path d="M3.5 6L8 10.5L12.5 6" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+
+  <symbol id="check" viewBox="0 0 24 24">
+    <path d="M4 12.5L9.5 18L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+
+  <symbol id="element-4" viewBox="0 0 16 16">
+    <path d="M14.6667 7.26146V2.72812C14.6667 1.72812 14.24 1.32812 13.18 1.32812H10.4867C9.42667 1.32812 9 1.72812 9 2.72812V7.26146C9 8.26146 9.42667 8.66146 10.4867 8.66146H13.18C14.24 8.66146 14.6667 8.26146 14.6667 7.26146Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M14.6667 13.2719V12.0719C14.6667 11.0719 14.24 10.6719 13.18 10.6719H10.4867C9.42667 10.6719 9 11.0719 9 12.0719V13.2719C9 14.2719 9.42667 14.6719 10.4867 14.6719H13.18C14.24 14.6719 14.6667 14.2719 14.6667 13.2719Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M7.0026 8.72813V13.2615C7.0026 14.2615 6.57594 14.6615 5.51594 14.6615H2.8226C1.7626 14.6615 1.33594 14.2615 1.33594 13.2615V8.72813C1.33594 7.72813 1.7626 7.32812 2.8226 7.32812H5.51594C6.57594 7.32812 7.0026 7.72813 7.0026 8.72813Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M7.0026 2.72812V3.92813C7.0026 4.92813 6.57594 5.32813 5.51594 5.32813H2.8226C1.7626 5.32813 1.33594 4.92813 1.33594 3.92813V2.72812C1.33594 1.72812 1.7626 1.32812 2.8226 1.32812H5.51594C6.57594 1.32812 7.0026 1.72812 7.0026 2.72812Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+
+  <symbol id="instagram" viewBox="0 0 24 24">
+    <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+    <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+    <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+  </symbol>
+
+  <symbol id="linkedin" viewBox="0 0 24 24">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="2" y="9" width="4" height="12" stroke="currentColor" stroke-width="1.5" fill="none"/>
+    <circle cx="4" cy="4" r="2" fill="currentColor"/>
+  </symbol>
+</svg>
