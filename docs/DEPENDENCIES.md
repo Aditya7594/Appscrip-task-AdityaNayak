@@ -8,3 +8,4 @@
 | class-transformer | backend | Transforms plain objects to class instances and handles implicit type conversions |
 | @prisma/client | backend | Auto-generated, type-safe database client for PostgreSQL operations |
 | prisma | backend | Database toolkit and migration engine for schema definition and migrations |
+| tsx | backend | TypeScript execution runtime for running image download and seed scripts directly |
