@@ -21,7 +21,7 @@ export function ProductCard({ product, index, page = 1 }: ProductCardProps) {
 
   return (
     <li className={styles.productCard}>
-      <article className={styles.productArticle}>
+      <article id={`product-${product.slug}`} className={styles.productArticle}>
         <div className={styles.productMedia}>
           <Image
             src={image.url}
