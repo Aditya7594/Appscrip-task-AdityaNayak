@@ -25,6 +25,12 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Seed data
+
+The database seed (`npm run seed` or `npx prisma db seed`) populates 4 categories and 60 products with images:
+- **Base products:** 20 products sourced from the FakeStore API snapshot (`prisma/data/fakestore-products.json`).
+- **Variants:** 40 product variants (2 per base product: `- Midnight` and `- Sand`) are deterministically generated demo data with pseudo-random pricing (+/-15%), jittered ratings, staggered creation timestamps, and matching image assets in `frontend/public/products/`.
+
 ## Project setup
 
 ```bash
