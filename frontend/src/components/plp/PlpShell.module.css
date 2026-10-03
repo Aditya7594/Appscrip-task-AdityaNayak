@@ -1,0 +1,58 @@
+.shellWrapper {
+  width: 100%;
+}
+
+.layout {
+  width: 100%;
+  display: block;
+}
+
+.sidebar {
+  display: none;
+}
+
+.results {
+  width: 100%;
+  min-width: 0;
+  transition: opacity 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .results {
+    transition: none;
+  }
+}
+
+/* Dim results area while navigation/filtering is pending */
+.layout[aria-busy="true"] .results {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Desktop Layout (>= 1200px) */
+@media (min-width: 1200px) {
+  .layout[data-filters="open"] {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    column-gap: var(--spacing-16);
+  }
+
+  .layout[data-filters="open"] .sidebar {
+    display: block;
+    width: 300px;
+  }
+
+  .layout[data-filters="hidden"] {
+    display: block;
+  }
+
+  .layout[data-filters="hidden"] .sidebar {
+    display: none;
+  }
+
+  /* When filters are hidden, product grid expands to 4 columns */
+  .layout[data-filters="hidden"] ul[class*="productGrid"],
+  .layout[data-filters="hidden"] [data-grid] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

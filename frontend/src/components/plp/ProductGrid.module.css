@@ -33,7 +33,8 @@
   }
 
   .filtersHidden .productGrid,
-  .productGrid.filtersHidden {
+  .productGrid.filtersHidden,
+  :global([data-filters="hidden"]) .productGrid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

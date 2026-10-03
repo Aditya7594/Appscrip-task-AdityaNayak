@@ -17,15 +17,40 @@ const SLUG_REGEX = /^[a-z0-9-]+$/;
  * into a sanitized PlpQuery object. Never throws.
  */
 export function parsePlpSearchParams(
-  raw: Record<string, string | string[] | undefined> = {},
+  raw:
+    | Record<string, string | string[] | undefined>
+    | URLSearchParams
+    | { entries(): IterableIterator<[string, string]>; get(name: string): string | null }
+    = {},
 ): PlpQuery {
+  let record: Record<string, string | string[] | undefined>;
+
+  if (
+    raw instanceof URLSearchParams ||
+    (typeof raw === 'object' && raw !== null && 'entries' in raw && typeof (raw as URLSearchParams).entries === 'function')
+  ) {
+    record = {};
+    const entries = (raw as URLSearchParams).entries();
+    for (const [key, value] of entries) {
+      const existing = record[key];
+      if (existing === undefined) {
+        record[key] = value;
+      } else if (Array.isArray(existing)) {
+        existing.push(value);
+      } else {
+        record[key] = [existing, value];
+      }
+    }
+  } else {
+    record = (raw as Record<string, string | string[] | undefined>) || {};
+  }
   // Page: integer >= 1 (default 1)
-  const rawPage = Array.isArray(raw.page) ? raw.page[0] : raw.page;
+  const rawPage = Array.isArray(record.page) ? record.page[0] : record.page;
   const parsedPage = parseInt(String(rawPage), 10);
   const page = Number.isInteger(parsedPage) && parsedPage >= 1 ? parsedPage : 1;
 
   // Sort: whitelist (default 'recommended')
-  const rawSort = Array.isArray(raw.sort) ? raw.sort[0] : raw.sort;
+  const rawSort = Array.isArray(record.sort) ? record.sort[0] : record.sort;
   const sort: SortKey =
     typeof rawSort === 'string' && (SORT_KEYS as readonly string[]).includes(rawSort)
       ? (rawSort as SortKey)
@@ -33,10 +58,10 @@ export function parsePlpSearchParams(
 
   // Category: unique slugs matching /^[a-z0-9-]+$/ (comma-separated, max 10)
   let rawSlugs: string[] = [];
-  if (Array.isArray(raw.category)) {
-    rawSlugs = raw.category.flatMap((c) => (typeof c === 'string' ? c.split(',') : []));
-  } else if (typeof raw.category === 'string') {
-    rawSlugs = raw.category.split(',');
+  if (Array.isArray(record.category)) {
+    rawSlugs = record.category.flatMap((c) => (typeof c === 'string' ? c.split(',') : []));
+  } else if (typeof record.category === 'string') {
+    rawSlugs = record.category.split(',');
   }
 
   const uniqueValidSlugs = Array.from(
@@ -51,7 +76,7 @@ export function parsePlpSearchParams(
   let minPrice: number | undefined;
   let maxPrice: number | undefined;
 
-  const rawMinPrice = Array.isArray(raw.minPrice) ? raw.minPrice[0] : raw.minPrice;
+  const rawMinPrice = Array.isArray(record.minPrice) ? record.minPrice[0] : record.minPrice;
   if (rawMinPrice !== undefined && rawMinPrice !== '') {
     const num = Number(rawMinPrice);
     if (Number.isFinite(num) && num >= 0) {
@@ -59,7 +84,7 @@ export function parsePlpSearchParams(
     }
   }
 
-  const rawMaxPrice = Array.isArray(raw.maxPrice) ? raw.maxPrice[0] : raw.maxPrice;
+  const rawMaxPrice = Array.isArray(record.maxPrice) ? record.maxPrice[0] : record.maxPrice;
   if (rawMaxPrice !== undefined && rawMaxPrice !== '') {
     const num = Number(rawMaxPrice);
     if (Number.isFinite(num) && num >= 0) {
@@ -76,7 +101,7 @@ export function parsePlpSearchParams(
 
   // Rating: 0..5
   let minRating: number | undefined;
-  const rawMinRating = Array.isArray(raw.minRating) ? raw.minRating[0] : raw.minRating;
+  const rawMinRating = Array.isArray(record.minRating) ? record.minRating[0] : record.minRating;
   if (rawMinRating !== undefined && rawMinRating !== '') {
     const num = Number(rawMinRating);
     if (Number.isFinite(num) && num >= 0 && num <= 5) {
@@ -86,7 +111,7 @@ export function parsePlpSearchParams(
 
   // Search query q: trimmed 1..80 characters
   let q: string | undefined;
-  const rawQ = Array.isArray(raw.q) ? raw.q[0] : raw.q;
+  const rawQ = Array.isArray(record.q) ? record.q[0] : record.q;
   if (typeof rawQ === 'string') {
     const trimmed = rawQ.trim();
     if (trimmed.length >= 1) {

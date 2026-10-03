@@ -1,0 +1,65 @@
+.filterToggle {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .filterToggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    padding: 0 var(--spacing-8);
+    font-family: var(--font-serif);
+    font-size: var(--font-size-secondary);
+    font-weight: 400;
+    text-transform: uppercase;
+    text-decoration: underline;
+    color: var(--color-secondary);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    line-height: 40px;
+    transition: color 0.15s ease;
+  }
+
+  .filterToggle:hover,
+  .filterToggle:focus-visible {
+    color: var(--color-text);
+  }
+
+  .filterToggle .icon {
+    width: 16px;
+    height: 16px;
+    color: var(--color-secondary);
+    flex-shrink: 0;
+  }
+
+  .filterToggle:hover .icon,
+  .filterToggle:focus-visible .icon {
+    color: var(--color-text);
+  }
+}
+
+/* Mobile variant (<= 767px) */
+.mobileFilterBtn {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text);
+  cursor: pointer;
+  gap: 8px;
+  line-height: 1;
+}
+
+.mobileFilterBtn:hover,
+.mobileFilterBtn:focus-visible {
+  color: var(--color-black);
+}

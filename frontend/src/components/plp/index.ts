@@ -2,3 +2,8 @@ export * from './Hero';
 export * from './WishlistButton';
 export * from './ProductCard';
 export * from './ProductGrid';
+export * from './PlpContext';
+export * from './PlpShell';
+export * from './Toolbar';
+export * from './FilterToggle';
+export * from './SortDropdown';

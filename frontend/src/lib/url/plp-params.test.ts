@@ -43,6 +43,17 @@ describe('plp-params', () => {
         category: [],
       });
     });
+
+    it('parses URLSearchParams instances directly', () => {
+      const sp = new URLSearchParams('page=3&sort=price_asc&category=electronics,men&minPrice=20');
+      const parsed = parsePlpSearchParams(sp);
+      expect(parsed).toEqual({
+        page: 3,
+        sort: 'price_asc',
+        category: ['electronics', 'men'],
+        minPrice: 20,
+      });
+    });
   });
 
   describe('parsePlpSearchParams - invalid values and garbage handling', () => {

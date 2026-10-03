@@ -80,7 +80,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
@@ -88,7 +88,7 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   font-family: var(--font-ui);
   font-size: var(--font-size-secondary);
   font-weight: 400;

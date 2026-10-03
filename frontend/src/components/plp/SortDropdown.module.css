@@ -1,0 +1,137 @@
+.sortWrapper {
+  position: relative;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sortDesktop {
+  display: none;
+}
+
+.sortMobile {
+  flex: 1;
+  height: 100%;
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .sortDesktop {
+    display: flex;
+  }
+
+  .sortMobile {
+    display: none;
+  }
+}
+
+.sortTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  line-height: 40px;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.sortTrigger:hover,
+.sortTrigger:focus-visible {
+  color: var(--color-black);
+}
+
+.chevronIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-icon);
+  flex-shrink: 0;
+}
+
+/* Mobile trigger variant (<= 767px) */
+.mobileTrigger {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text);
+  cursor: pointer;
+  gap: 8px;
+  line-height: 1;
+}
+
+.mobileTrigger:hover,
+.mobileTrigger:focus-visible {
+  color: var(--color-black);
+}
+
+/* Dropdown listbox */
+.sortMenu {
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 0;
+  width: 235px;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-menu);
+  list-style: none;
+  margin: 0;
+  padding: 16px 0;
+  z-index: 120;
+  box-sizing: border-box;
+}
+
+.mobileMenu {
+  top: 100%;
+  right: 0;
+  left: auto;
+}
+
+.sortItem {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-inline: 24px 32px;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 40px;
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color 0.1s ease;
+}
+
+.sortItem:hover,
+.sortItem:focus-visible,
+.sortItem[data-active="true"] {
+  background-color: var(--color-tint-bg);
+}
+
+.sortItemSelected {
+  font-weight: 700;
+  gap: var(--spacing-8);
+}
+
+.checkIcon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  color: var(--color-text);
+}
