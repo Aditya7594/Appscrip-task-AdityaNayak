@@ -12,3 +12,7 @@ export * from './FilterSidebar';
 export * from './Pagination';
 export * from './ProductGridSkeleton';
 export * from './EmptyState';
+export * from './Breadcrumb';
+export * from './FilterDrawer';
+export * from './MobileFilterBar';
+export * from './sort-options';

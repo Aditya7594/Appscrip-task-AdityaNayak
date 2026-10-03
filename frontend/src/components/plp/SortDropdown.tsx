@@ -5,19 +5,9 @@ import { SortKey } from '@/types/plp';
 import { usePlpNavigation } from '@/lib/url/use-plp-navigation';
 import { ChevronIcon, CheckIcon } from '@/components/ui/icons';
 import styles from './SortDropdown.module.css';
+import { SORT_OPTIONS, type SortOption } from './sort-options';
 
-export interface SortOption {
-  label: string;
-  value: SortKey;
-}
-
-export const SORT_OPTIONS: SortOption[] = [
-  { label: 'Recommended', value: 'recommended' },
-  { label: 'Newest first', value: 'newest' },
-  { label: 'Popular', value: 'popular' },
-  { label: 'Price : high to low', value: 'price_desc' },
-  { label: 'Price : low to high', value: 'price_asc' },
-];
+export { SORT_OPTIONS, type SortOption };
 
 export interface SortDropdownProps {
   currentSort?: SortKey;

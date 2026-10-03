@@ -3,7 +3,6 @@ import Link from 'next/link';
 import styles from './Header.module.css';
 import {
   BrandMarkIcon,
-  HamburgerIcon,
   SearchIcon,
   HeartIcon,
   BagIcon,
@@ -11,6 +10,7 @@ import {
   ChevronIcon,
   Element4Icon,
 } from '@/components/ui/icons';
+import { MobileMenu } from './MobileMenu';
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
@@ -41,14 +41,8 @@ export function Header() {
 
       {/* Main Header */}
       <div className={styles.headerMain}>
-        {/* Mobile Hamburger Button */}
-        <button
-          className={styles.headerHamburger}
-          type="button"
-          aria-label="Open navigation menu"
-        >
-          <HamburgerIcon className={styles.hamburgerIcon} size={20} />
-        </button>
+        {/* Mobile Navigation Drawer & Hamburger Trigger */}
+        <MobileMenu />
 
         {/* Brand Mark Link */}
         <Link href="/" className={styles.brandMark} aria-label="Home">

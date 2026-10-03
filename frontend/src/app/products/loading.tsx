@@ -1,15 +1,17 @@
 import React from 'react';
-import { Hero, ProductGridSkeleton } from '@/components/plp';
+import { Breadcrumb, Hero, ProductGridSkeleton } from '@/components/plp';
 import styles from './loading.module.css';
 
 /**
  * Server component used by Next.js during initial page load/navigation to /products.
- * Renders Hero + toolbar skeleton + desktop sidebar placeholder + ProductGridSkeleton.
+ * Renders Breadcrumb + Hero + toolbar skeleton + desktop sidebar placeholder + ProductGridSkeleton.
  */
 export default function Loading() {
   return (
-    <div className="container">
-      <Hero />
+    <>
+      <Breadcrumb />
+      <div className="container">
+        <Hero />
       <div className={styles.plpContainer}>
         {/* Toolbar skeleton */}
         <div className={styles.toolbarSkeleton} aria-hidden="true">
@@ -41,5 +43,6 @@ export default function Loading() {
         </div>
       </div>
     </div>
+    </>
   );
 }

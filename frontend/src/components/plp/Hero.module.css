@@ -1,64 +1,63 @@
 .hero {
-  padding-top: 40px;
-  padding-bottom: 32px;
+  padding: 24px 16px 24px;
   text-align: center;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .heroTitle {
-  font-family: var(--font-serif);
-  font-size: 28px;
+  font-family: var(--font-ui);
+  font-size: 24px;
   font-weight: 400;
   line-height: 1.2;
-  letter-spacing: 1px;
+  letter-spacing: var(--letter-spacing-wide);
   text-transform: uppercase;
-  color: var(--color-black);
-  margin: 0 0 16px;
+  color: var(--color-text);
+  margin: 0;
 }
 
 .heroText {
   font-family: var(--font-ui);
   font-size: 16px;
   font-weight: 400;
-  line-height: 24px;
+  line-height: 22px;
   color: var(--color-text);
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 343px;
+  margin: 12px auto 0;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1199px) {
   .hero {
-    padding-top: 56px;
-    padding-bottom: 48px;
+    padding: 48px 32px;
   }
 
   .heroTitle {
     font-size: 40px;
-    margin-bottom: 24px;
   }
 
   .heroText {
     font-size: 18px;
     line-height: 32px;
-    max-width: 680px;
+    max-width: 600px;
+    margin-top: 16px;
   }
 }
 
 @media (min-width: 1200px) {
   .hero {
-    padding-top: 72px;
-    padding-bottom: 72px;
+    padding-top: var(--spacing-72);
+    padding-bottom: var(--spacing-72);
   }
 
   .heroTitle {
-    font-size: 60px;
+    font-size: var(--font-size-hero-title);
     line-height: 72px;
-    margin-bottom: 24px;
   }
 
   .heroText {
-    font-size: 22px;
+    font-size: var(--font-size-hero-text);
     line-height: 40px;
     max-width: 721px;
+    margin-top: 16px;
   }
 }

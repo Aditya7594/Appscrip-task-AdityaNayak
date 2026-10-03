@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import {
+  Breadcrumb,
   Hero,
   ProductGrid,
   Toolbar,
@@ -36,18 +37,21 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const isEmpty = paginatedProducts.meta.total === 0;
 
   return (
-    <div className="container">
-      <Hero />
-      <div className={styles.plpContainer}>
-        <PlpShell
-          toolbar={
-            <Toolbar
-              total={paginatedProducts.meta.total}
-              currentSort={query.sort}
-            />
-          }
-          sidebar={<FilterSidebar categories={categories} />}
-        >
+    <>
+      <Breadcrumb />
+      <div className="container">
+        <Hero />
+        <div className={styles.plpContainer}>
+          <PlpShell
+            toolbar={
+              <Toolbar
+                total={paginatedProducts.meta.total}
+                currentSort={query.sort}
+                categories={categories}
+              />
+            }
+            sidebar={<FilterSidebar categories={categories} />}
+          >
           {isEmpty ? (
             <EmptyState />
           ) : (
@@ -66,5 +70,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </PlpShell>
       </div>
     </div>
+    </>
   );
 }
