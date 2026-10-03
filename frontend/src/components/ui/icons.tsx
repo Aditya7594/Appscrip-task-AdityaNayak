@@ -38,23 +38,28 @@ export function SearchIcon({ size = 24, className, ...props }: IconProps) {
   );
 }
 
-export function HeartIcon({ size = 24, className, ...props }: IconProps) {
+export interface HeartIconProps extends IconProps {
+  filled?: boolean;
+}
+
+export function HeartIcon({ size = 24, filled = false, className, ...props }: HeartIconProps) {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={filled ? '#EB4C6B' : 'none'}
       aria-hidden="true"
       className={className}
       {...props}
     >
       <path
         d="M12.62 20.8116C12.28 20.9316 11.72 20.9316 11.38 20.8116C8.48 19.8216 2 15.6916 2 8.69156C2 5.60156 4.49 3.10156 7.56 3.10156C9.38 3.10156 10.99 3.98156 12 5.34156C13.01 3.98156 14.63 3.10156 16.44 3.10156C19.51 3.10156 22 5.60156 22 8.69156C22 15.6916 15.52 19.8216 12.62 20.8116Z"
-        stroke="currentColor"
+        stroke={filled ? '#EB4C6B' : 'currentColor'}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+        fill={filled ? '#EB4C6B' : 'none'}
       />
     </svg>
   );

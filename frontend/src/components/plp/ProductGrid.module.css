@@ -1,0 +1,39 @@
+.productResults {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Mobile Grid (<= 767px): 2 columns, column-gap 8px, row-gap 16px */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 8px;
+  row-gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Tablet Grid (768px - 1199px): 3 columns */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .productGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--spacing-16);
+    row-gap: 24px;
+  }
+}
+
+/* Desktop Grid (>= 1200px): 3 columns (default with filters) or 4 columns (.filtersHidden) */
+@media (min-width: 1200px) {
+  .productGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--spacing-16);
+    row-gap: var(--spacing-32);
+  }
+
+  .filtersHidden .productGrid,
+  .productGrid.filtersHidden {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

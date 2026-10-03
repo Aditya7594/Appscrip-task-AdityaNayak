@@ -1,0 +1,26 @@
+.plpContainer {
+  width: 100%;
+  padding-bottom: 64px;
+}
+
+.plpContent {
+  width: 100%;
+  display: block;
+}
+
+.sidebar {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .plpContent {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    column-gap: var(--spacing-16);
+  }
+
+  .sidebar {
+    display: block;
+    width: 300px;
+  }
+}
