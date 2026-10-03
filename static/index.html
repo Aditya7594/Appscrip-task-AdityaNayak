@@ -94,13 +94,42 @@
 
     <main id="main">
       <section class="hero">
-        <!-- single h1 + paragraph -->
-        <h1 class="visually-hidden">Discover Our Products</h1>
+        <h1 class="hero__title">Discover our products</h1>
+        <p class="hero__text">Lorem ipsum dolor sit amet consectetur. Amet est posuere rhoncus scelerisque. Dolor integer scelerisque nibh amet mi ut elementum dolor.</p>
       </section>
 
-      <div class="plp">
+      <div class="plp container">
         <div class="toolbar">
-          <!-- toolbar -->
+          <div class="toolbar__left">
+            <p class="toolbar__count"><span>3425</span> items</p>
+            <button class="toolbar__filter-toggle" type="button" aria-expanded="true" aria-controls="filters">
+              <svg class="icon icon--chevron-left" aria-hidden="true">
+                <use href="assets/icons.svg#chevron-left" />
+              </svg>
+              <span>Hide filter</span>
+            </button>
+          </div>
+
+          <div class="sort">
+            <button class="sort__trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span>Recommended</span>
+              <svg class="icon icon--chevron" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </button>
+            <ul class="sort__menu" role="listbox">
+              <li class="sort__item sort__item--selected" role="option" aria-selected="true">
+                <svg class="icon icon--check" aria-hidden="true">
+                  <use href="assets/icons.svg#check" />
+                </svg>
+                <span>Recommended</span>
+              </li>
+              <li class="sort__item" role="option" aria-selected="false">Newest first</li>
+              <li class="sort__item" role="option" aria-selected="false">Popular</li>
+              <li class="sort__item" role="option" aria-selected="false">Price : high to low</li>
+              <li class="sort__item" role="option" aria-selected="false">Price : low to high</li>
+            </ul>
+          </div>
         </div>
 
         <aside class="filters" aria-labelledby="filters-heading">

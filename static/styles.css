@@ -30,7 +30,8 @@
   --shadow-menu: 0 0 7px 1px rgba(163, 170, 175, 0.2);
 
   /* Layout */
-  --container-max-width: 1248px;
+  --container-width: 1248px;
+  --container-max-width: calc(var(--container-width) + 2 * var(--spacing-96));
 
   /* Spacing Scale (based on 4 / 8 / 16 / 24 / 32) */
   --spacing-4: 4px;
@@ -229,6 +230,19 @@ body {
   color: var(--color-icon);
 }
 
+.icon--chevron-left {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+.icon--check {
+  width: 26px;
+  height: 26px;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
 /* ==========================================================================
    HEADER (DESKTOP)
    ========================================================================== */
@@ -410,4 +424,188 @@ body {
   text-decoration: underline 2px solid currentColor;
   text-underline-offset: 6px;
 }
+
+/* ==========================================================================
+   HERO SECTION (DESKTOP)
+   ========================================================================== */
+
+.hero {
+  padding-top: var(--spacing-72);
+  padding-bottom: var(--spacing-72);
+  text-align: center;
+}
+
+.hero__title {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-hero-title); /* 60px */
+  font-weight: 400; /* Regular */
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide); /* 1px */
+  color: var(--color-text); /* #252020 */
+  line-height: 1.2;
+  margin: 0;
+}
+
+.hero__text {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-hero-text); /* 22px */
+  font-weight: 400; /* Regular */
+  line-height: 40px;
+  color: var(--color-text); /* #252020 */
+  max-width: 721px;
+  margin: 16px auto 0;
+}
+
+/* ==========================================================================
+   PLP & TOOLBAR (DESKTOP)
+   ========================================================================== */
+
+.plp {
+  width: 100%;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 88px;
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-hairline);
+  border-bottom: 1px solid var(--color-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-56); /* ~56px to the right */
+}
+
+.toolbar__count {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui); /* 18px */
+  font-weight: 700; /* Bold */
+  text-transform: uppercase;
+  color: var(--color-text); /* #252020 */
+  line-height: 40px;
+  margin: 0;
+}
+
+.toolbar__filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: 0 var(--spacing-8);
+  font-family: var(--font-serif); /* Caslon */
+  font-size: var(--font-size-secondary); /* 16px */
+  font-weight: 400; /* Regular */
+  text-transform: uppercase; /* Uppercase via CSS, not in HTML text */
+  text-decoration: underline;
+  color: var(--color-secondary); /* #888792 */
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  line-height: 40px;
+}
+
+.toolbar__filter-toggle:hover,
+.toolbar__filter-toggle:focus-visible {
+  color: var(--color-text);
+}
+
+.toolbar__filter-toggle .icon--chevron-left {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+/* Sort Dropdown */
+.sort {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.sort__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui); /* 18px */
+  font-weight: 700; /* Bold */
+  text-transform: uppercase;
+  color: var(--color-text); /* #252020 */
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  line-height: 40px;
+  padding: 0;
+}
+
+.sort__trigger:hover,
+.sort__trigger:focus-visible {
+  color: var(--color-black);
+}
+
+.sort__trigger .icon--chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--color-icon);
+}
+
+/* Sort Menu (open): 235 wide x 324 tall, white, box-shadow, overlapping bottom line, right aligned */
+.sort__menu {
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 0;
+  width: 235px;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-menu); /* 0 0 7px 1px rgba(163,170,175,0.2) */
+  list-style: none;
+  margin: 0;
+  padding: 16px 0;
+  z-index: 120;
+  display: none;
+}
+
+.sort--open .sort__menu {
+  display: block;
+}
+
+.sort__item {
+  min-height: 58px; /* about 58px vertical pitch */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-inline: 24px 32px;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui); /* 18px */
+  font-weight: 400; /* Regular for unselected items */
+  text-transform: uppercase;
+  line-height: 40px;
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sort__item:hover,
+.sort__item:focus-visible {
+  background-color: var(--color-tint-bg);
+}
+
+.sort__item--selected {
+  font-weight: 700; /* Bold */
+  gap: var(--spacing-8);
+}
+
+.sort__item .icon--check {
+  width: 26px;
+  height: 26px;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
 
