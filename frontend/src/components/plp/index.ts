@@ -9,3 +9,4 @@ export * from './FilterToggle';
 export * from './SortDropdown';
 export * from './FilterGroup';
 export * from './FilterSidebar';
+export * from './Pagination';

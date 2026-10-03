@@ -1,5 +1,4 @@
-import React from 'react';
-import { Hero, ProductGrid, Toolbar, PlpShell, FilterSidebar } from '@/components/plp';
+import { Hero, ProductGrid, Toolbar, PlpShell, FilterSidebar, Pagination } from '@/components/plp';
 import { getProducts, getCategories } from '@/lib/api';
 import { parsePlpSearchParams } from '@/lib/url';
 import styles from './ProductsPage.module.css';
@@ -33,6 +32,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <ProductGrid
             products={paginatedProducts.data}
             page={query.page}
+          />
+          <Pagination
+            currentPage={paginatedProducts.meta.page}
+            totalPages={paginatedProducts.meta.totalPages}
+            query={query}
           />
         </PlpShell>
       </div>
