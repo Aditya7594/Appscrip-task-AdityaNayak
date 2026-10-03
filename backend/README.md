@@ -64,16 +64,30 @@ $ npm run start:prod
 
 ## Run tests
 
-```bash
-# unit tests
-$ npm run test
+The test suite consists of unit tests (services, mappers, query validation, sort ordering) and end-to-end (e2e) tests for `/products`, `/categories`, and `/health`.
 
-# e2e tests
+### Test database setup (`docker compose`)
+
+E2E tests target a dedicated test database named `plp_test` configured via `DATABASE_URL_TEST` (see `.env.test.example` committed without secrets):
+
+```bash
+# 1. Start PostgreSQL
+$ docker compose up -d
+
+# 2. Run unit tests
+$ npm test
+
+# 3. Run e2e tests
 $ npm run test:e2e
 
-# test coverage
+# 4. Run test coverage
 $ npm run test:cov
 ```
+
+**E2E Lifecycle:**
+- In `beforeAll`, migrations are applied via `prisma migrate deploy`, and a deterministic fixture (3 categories: `electronics`, `mens-clothing`, `jewelery`; 15 products with verified prices, ratings, and creation dates) is inserted.
+- In `afterAll`, tables are truncated (`TRUNCATE TABLE "ProductImage", "Product", "Category" CASCADE;`) and the connection is closed.
+- If executed in an environment without Docker, the test harness transparently falls back to an in-memory repository with the identical fixture, ensuring 100% deterministic test execution.
 
 ## Deployment
 
