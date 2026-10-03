@@ -453,7 +453,122 @@
     </main>
 
     <footer class="site-footer">
-      <!-- site footer -->
+      <div class="footer-container">
+        <!-- Top Row (Three columns at x=128 / 504 / 888; Col 2 empty) -->
+        <div class="footer-top">
+          <div class="footer-col footer-col--newsletter">
+            <h2 class="footer-title">Be the first to know</h2>
+            <p class="footer-newsletter-text">Sign up for updates from mettā muse.</p>
+            <form class="newsletter" action="#" method="post">
+              <label class="visually-hidden" for="email">Email address</label>
+              <input id="email" type="email" placeholder="Enter your e-mail..." autocomplete="email" required>
+              <button type="submit" disabled>Subscribe</button>
+            </form>
+          </div>
+
+          <div class="footer-col footer-col--contact">
+            <h2 class="footer-title">Contact us</h2>
+            <div class="footer-contact">
+              <a href="tel:+442211335360" class="footer-contact__link">+44 221 133 5360</a>
+              <a href="mailto:customercare@mettamuse.com" class="footer-contact__link">customercare@mettamuse.com</a>
+            </div>
+
+            <h2 class="footer-title footer-title--spaced">Currency</h2>
+            <div class="currency-row">
+              <svg class="currency-flag" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                <clipPath id="flag-circle">
+                  <circle cx="12" cy="12" r="12" />
+                </clipPath>
+                <g clip-path="url(#flag-circle)">
+                  <rect width="24" height="24" fill="#B22234" />
+                  <path d="M0 3.7h24v1.8H0zm0 3.7h24v1.8H0zm0 3.7h24v1.8H0zm0 3.7h24v1.8H0zm0 3.7h24v1.8H0zm0 3.7h24v1.8H0z" fill="#FFFFFF" />
+                  <rect width="11" height="13" fill="#3C3B6E" />
+                  <circle cx="2.5" cy="3" r="0.75" fill="#FFFFFF" />
+                  <circle cx="5.5" cy="3" r="0.75" fill="#FFFFFF" />
+                  <circle cx="8.5" cy="3" r="0.75" fill="#FFFFFF" />
+                  <circle cx="4" cy="5.5" r="0.75" fill="#FFFFFF" />
+                  <circle cx="7" cy="5.5" r="0.75" fill="#FFFFFF" />
+                  <circle cx="2.5" cy="8" r="0.75" fill="#FFFFFF" />
+                  <circle cx="5.5" cy="8" r="0.75" fill="#FFFFFF" />
+                  <circle cx="8.5" cy="8" r="0.75" fill="#FFFFFF" />
+                  <circle cx="4" cy="10.5" r="0.75" fill="#FFFFFF" />
+                  <circle cx="7" cy="10.5" r="0.75" fill="#FFFFFF" />
+                </g>
+              </svg>
+              <span class="currency-dot" aria-hidden="true"></span>
+              <span class="currency-code">USD</span>
+            </div>
+            <p class="currency-note">Transactions will be completed in Euros and a currency reference is available on hover.</p>
+          </div>
+        </div>
+
+        <!-- 1px Divider across 1248px -->
+        <hr class="footer-divider">
+
+        <!-- Bottom Row (Three columns at x=128 / 504 / 888) -->
+        <div class="footer-bottom">
+          <!-- Col 1: x=128 -->
+          <div class="footer-col">
+            <h2 class="footer-brand">mettā muse</h2>
+            <nav aria-label="Company">
+              <ul class="footer-links">
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/stories">Stories</a></li>
+                <li><a href="/artisans">Artisans</a></li>
+                <li><a href="/boutiques">Boutiques</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/eu-compliances">EU Compliances Docs</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- Col 2: x=504 -->
+          <div class="footer-col">
+            <h2 class="footer-title">Quick links</h2>
+            <nav aria-label="Customer service">
+              <ul class="footer-links">
+                <li><a href="/orders">Orders &amp; Shipping</a></li>
+                <li><a href="/sellers">Join/Login as a Seller</a></li>
+                <li><a href="/pricing">Payment &amp; Pricing</a></li>
+                <li><a href="/returns">Return &amp; Refunds</a></li>
+                <li><a href="/faqs">FAQs</a></li>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms &amp; Conditions</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- Col 3: x=888 -->
+          <div class="footer-col">
+            <h2 class="footer-title">Follow us</h2>
+            <div class="footer-social">
+              <a href="https://instagram.com/mettamuse" class="footer-social__link" aria-label="Follow mettā muse on Instagram" target="_blank" rel="noopener noreferrer">
+                <svg class="icon icon--social" aria-hidden="true">
+                  <use href="assets/icons.svg#instagram" />
+                </svg>
+              </a>
+              <a href="https://linkedin.com/company/mettamuse" class="footer-social__link" aria-label="Follow mettā muse on LinkedIn" target="_blank" rel="noopener noreferrer">
+                <svg class="icon icon--social" aria-hidden="true">
+                  <use href="assets/icons.svg#linkedin" />
+                </svg>
+              </a>
+            </div>
+
+            <h2 class="footer-title footer-title--spaced">mettā muse accepts</h2>
+            <div class="footer-payments">
+              <img src="assets/payments/google-pay.svg" alt="Google Pay" width="56" height="35" loading="lazy">
+              <img src="assets/payments/mastercard.svg" alt="Mastercard" width="56" height="35" loading="lazy">
+              <img src="assets/payments/paypal.svg" alt="PayPal" width="56" height="35" loading="lazy">
+              <img src="assets/payments/american-express.svg" alt="American Express" width="56" height="35" loading="lazy">
+              <img src="assets/payments/apple-pay.svg" alt="Apple Pay" width="56" height="35" loading="lazy">
+              <img src="assets/payments/shop-pay.svg" alt="Shop Pay" width="56" height="35" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <!-- Copyright centered -->
+        <p class="footer-copyright">Copyright &copy; 2023 mettamuse. All rights reserved.</p>
+      </div>
     </footer>
   </body>
 </html>
