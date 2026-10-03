@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow, Libre_Caslon_Text, Inter } from "next/font/google";
 import "./globals.css";
+import { Header, Footer } from "@/components/layout";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -48,7 +49,9 @@ export default function RootLayout({
         <a className="skip-link" href="#main">
           Skip to content
         </a>
+        <Header />
         <main id="main">{children}</main>
+        <Footer />
       </body>
     </html>
   );

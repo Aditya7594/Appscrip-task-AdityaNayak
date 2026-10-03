@@ -1,0 +1,317 @@
+.siteHeader {
+  width: 100%;
+  background-color: var(--color-white);
+}
+
+/* Top Strip */
+/* Mobile (<= 767px): 24px tall, one centered item */
+.topStrip {
+  height: 24px;
+  background-color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.topStripItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-10);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-strip);
+  font-weight: 400;
+  color: var(--color-primary);
+  letter-spacing: var(--letter-spacing-wide);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Hide 2nd and 3rd items on mobile */
+.topStripItem:nth-child(2),
+.topStripItem:nth-child(3) {
+  display: none;
+}
+
+.stripIcon {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .topStrip {
+    height: 32px;
+    justify-content: space-between;
+    padding-inline: 32px;
+  }
+
+  .topStripItem:nth-child(2),
+  .topStripItem:nth-child(3) {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 1200px) {
+  .topStrip {
+    padding-inline: calc((100% - 1440px) / 2 + 274px);
+  }
+}
+
+/* Header Main */
+/* Mobile (<= 767px): 55px tall, hamburger left, brand mark beside it, logo centered, icons right */
+.headerMain {
+  position: relative;
+  height: 55px;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-hairline);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.headerHamburger {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-icon);
+  z-index: 10;
+}
+
+.hamburgerIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-icon);
+  display: block;
+}
+
+.brandMark {
+  position: absolute;
+  left: 44px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-black);
+  z-index: 10;
+}
+
+.brandMarkIcon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-logo);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-black);
+  text-decoration: none;
+  text-align: center;
+}
+
+.headerTools {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-icon);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.toolItem:hover,
+.toolItem:focus-visible {
+  color: var(--color-text);
+}
+
+.toolItemProfile {
+  display: none;
+}
+
+.toolIcon {
+  width: 20px;
+  height: 20px;
+  color: inherit;
+  display: block;
+}
+
+.langSwitch {
+  display: none;
+}
+
+.headerNav {
+  display: none;
+}
+
+/* Tablet & Desktop Header Adjustments */
+@media (min-width: 768px) {
+  .headerMain {
+    height: 188px;
+  }
+
+  .headerHamburger {
+    display: none;
+  }
+
+  .brandMark {
+    left: 32px;
+    top: 36px;
+    transform: none;
+    width: 36px;
+    height: 36px;
+  }
+
+  .brandMarkIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .logo {
+    top: 36px;
+    transform: translateX(-50%);
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  .headerTools {
+    right: 32px;
+    top: 42px;
+    transform: none;
+    gap: 16px;
+  }
+
+  .toolItem {
+    width: 24px;
+    height: 24px;
+  }
+
+  .toolIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .toolItemProfile {
+    display: inline-flex;
+  }
+
+  .langSwitch {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: var(--font-size-secondary);
+    font-weight: 700;
+    letter-spacing: var(--letter-spacing-wide);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .langSwitch:hover,
+  .langSwitch:focus-visible {
+    color: var(--color-black);
+  }
+
+  .langChevron {
+    width: 16px;
+    height: 16px;
+    color: var(--color-icon);
+  }
+
+  .headerNav {
+    display: block;
+    position: absolute;
+    top: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+  }
+
+  .navList {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navLink {
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text);
+    text-decoration: none;
+    line-height: 1.2;
+    transition: color 0.15s ease-in-out;
+  }
+
+  .navLink:hover,
+  .navLink:focus-visible {
+    text-decoration: underline 2px solid currentColor;
+    text-underline-offset: 6px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .brandMark {
+    left: 96px;
+    top: 40px;
+  }
+
+  .headerTools {
+    right: 96px;
+    top: 46px;
+    gap: var(--spacing-24);
+  }
+
+  .headerNav {
+    top: 140px;
+  }
+
+  .navList {
+    gap: var(--spacing-64);
+  }
+}

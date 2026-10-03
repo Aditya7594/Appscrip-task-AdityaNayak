@@ -1,0 +1,5 @@
+<svg width="56" height="35" viewBox="0 0 56 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="56" height="35" rx="5" fill="#FFFFFF"/>
+  <rect x="0.5" y="0.5" width="55" height="34" rx="4.5" stroke="#E5E5E5"/>
+  <text x="28" y="22" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="#000000" text-anchor="middle" letter-spacing="0.5">Pay</text>
+</svg>
