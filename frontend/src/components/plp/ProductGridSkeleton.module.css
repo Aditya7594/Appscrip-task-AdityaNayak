@@ -1,0 +1,140 @@
+.skeletonResults {
+  width: 100%;
+  min-width: 0;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 8px;
+  row-gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .skeletonGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--spacing-16);
+    row-gap: 24px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .skeletonGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--spacing-16);
+    row-gap: var(--spacing-32);
+  }
+
+  :global([data-filters="hidden"]) .skeletonGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.skeletonCard {
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1200px) {
+  .skeletonCard {
+    max-width: 300px;
+    height: 462px;
+  }
+}
+
+/* Shimmer base style */
+.shimmer {
+  background: #f2f2f2;
+  background-image: linear-gradient(
+    90deg,
+    #f2f2f2 0%,
+    #e6e6e6 50%,
+    #f2f2f2 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    background: #f2f2f2;
+  }
+}
+
+.mediaBox {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 168 / 224;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .mediaBox {
+    aspect-ratio: 300 / 399;
+  }
+}
+
+@media (min-width: 1200px) {
+  .mediaBox {
+    height: 399px;
+  }
+}
+
+.body {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (min-width: 1200px) {
+  .body {
+    margin-top: var(--spacing-16);
+    gap: 8px;
+  }
+}
+
+.titleLine {
+  height: 18px;
+  width: 75%;
+  border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .titleLine {
+    height: 22px;
+  }
+}
+
+.subtitleLine {
+  height: 14px;
+  width: 50%;
+  border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .subtitleLine {
+    height: 16px;
+  }
+}

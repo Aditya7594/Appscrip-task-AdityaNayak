@@ -1,6 +1,15 @@
-import { Hero, ProductGrid, Toolbar, PlpShell, FilterSidebar, Pagination } from '@/components/plp';
+import { redirect } from 'next/navigation';
+import {
+  Hero,
+  ProductGrid,
+  Toolbar,
+  PlpShell,
+  FilterSidebar,
+  Pagination,
+  EmptyState,
+} from '@/components/plp';
 import { getProducts, getCategories } from '@/lib/api';
-import { parsePlpSearchParams } from '@/lib/url';
+import { parsePlpSearchParams, buildPlpHref } from '@/lib/url';
 import styles from './ProductsPage.module.css';
 
 interface ProductsPageProps {
@@ -16,6 +25,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     getCategories(),
   ]);
 
+  // If page exceeds totalPages and total > 0, redirect to the last valid page
+  if (
+    paginatedProducts.meta.total > 0 &&
+    query.page > paginatedProducts.meta.totalPages
+  ) {
+    redirect(buildPlpHref(query, { page: paginatedProducts.meta.totalPages }));
+  }
+
+  const isEmpty = paginatedProducts.meta.total === 0;
+
   return (
     <div className="container">
       <Hero />
@@ -29,15 +48,21 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           }
           sidebar={<FilterSidebar categories={categories} />}
         >
-          <ProductGrid
-            products={paginatedProducts.data}
-            page={query.page}
-          />
-          <Pagination
-            currentPage={paginatedProducts.meta.page}
-            totalPages={paginatedProducts.meta.totalPages}
-            query={query}
-          />
+          {isEmpty ? (
+            <EmptyState />
+          ) : (
+            <>
+              <ProductGrid
+                products={paginatedProducts.data}
+                page={query.page}
+              />
+              <Pagination
+                currentPage={paginatedProducts.meta.page}
+                totalPages={paginatedProducts.meta.totalPages}
+                query={query}
+              />
+            </>
+          )}
         </PlpShell>
       </div>
     </div>
