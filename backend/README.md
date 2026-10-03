@@ -25,6 +25,18 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Error handling & status codes
+
+All error responses returned by the API strictly adhere to the unified schema `{ statusCode, error, message, path, timestamp }`:
+
+| Case | Status | Example response |
+| :--- | :---: | :--- |
+| **Validation error** (`/products?limit=100`) | 400 | `{"statusCode": 400, "error": "Bad Request", "message": ["limit must not be greater than 48"], "path": "/products?limit=100", "timestamp": "2026-10-03T16:00:00.000Z"}` |
+| **Invalid identifier type** (`/products/abc`) | 400 | `{"statusCode": 400, "error": "Bad Request", "message": "Validation failed (numeric string is expected)", "path": "/products/abc", "timestamp": "2026-10-03T16:00:00.000Z"}` |
+| **Product not found** (`/products/99999`) | 404 | `{"statusCode": 404, "error": "Not Found", "message": "Product 99999 not found", "path": "/products/99999", "timestamp": "2026-10-03T16:00:00.000Z"}` |
+| **Unknown route** (`/nope`) | 404 | `{"statusCode": 404, "error": "Not Found", "message": "Cannot GET /nope", "path": "/nope", "timestamp": "2026-10-03T16:00:00.000Z"}` |
+| **Prisma / unexpected error** | 500 | `{"statusCode": 500, "error": "Internal Server Error", "message": "Internal server error", "path": "/products", "timestamp": "2026-10-03T16:00:00.000Z"}` |
+
 ## Seed data
 
 The database seed (`npm run seed` or `npx prisma db seed`) populates 4 categories and 60 products with images:

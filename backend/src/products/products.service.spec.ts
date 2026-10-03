@@ -11,6 +11,7 @@ describe('ProductsService', () => {
     product: {
       count: ReturnType<typeof vitest.fn>;
       findMany: ReturnType<typeof vitest.fn>;
+      findUnique: ReturnType<typeof vitest.fn>;
     };
   };
 
@@ -54,6 +55,7 @@ describe('ProductsService', () => {
       product: {
         count: vitest.fn(),
         findMany: vitest.fn(),
+        findUnique: vitest.fn(),
       },
     };
 
@@ -303,5 +305,60 @@ describe('ProductsService', () => {
         orderBy: [{ price: 'desc' }, { id: 'desc' }],
       }),
     );
+  });
+
+  describe('findById', () => {
+    it('should return mapped ProductDto when product exists', async () => {
+      prismaService.product.findUnique.mockResolvedValue(sampleProduct);
+
+      const result = await service.findById(1);
+
+      expect(prismaService.product.findUnique).toHaveBeenCalledWith({
+        where: { id: 1 },
+        include: {
+          category: true,
+          images: {
+            orderBy: {
+              position: 'asc',
+            },
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        id: 1,
+        slug: 'mens-cotton-jacket',
+        title: "Men's Cotton Jacket",
+        description: 'Great outerwear jackets for Spring/Autumn/Winter.',
+        price: 55.99,
+        currency: 'USD',
+        rating: 4.7,
+        ratingCount: 500,
+        category: {
+          id: 1,
+          slug: 'mens-clothing',
+          name: "Men's Clothing",
+        },
+        images: [
+          {
+            url: '/products/mens-cotton-jacket.jpg',
+            alt: 'Main Photo',
+            position: 0,
+          },
+          {
+            url: '/products/mens-cotton-jacket-2.jpg',
+            alt: 'Angle 2',
+            position: 1,
+          },
+        ],
+        createdAt: '2026-10-01T00:00:00.000Z',
+      });
+    });
+
+    it('should throw NotFoundException when product does not exist', async () => {
+      prismaService.product.findUnique.mockResolvedValue(null);
+
+      await expect(service.findById(99999)).rejects.toThrow('Product 99999 not found');
+    });
   });
 });

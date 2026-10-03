@@ -1,13 +1,17 @@
-import { Controller, Get, Inject, Query } from '@nestjs/common';
+import { Controller, Get, Inject, Param, ParseIntPipe, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
 import { ListProductsQueryDto } from './dto/list-products-query.dto.js';
 import { PaginatedProductsDto } from './dto/paginated-products.dto.js';
+import { ProductDto } from './dto/product.dto.js';
 import { ProductsService } from './products.service.js';
 import { ProductSortOrder } from './products.sort.js';
 
@@ -83,32 +87,34 @@ export class ProductsController {
       'Paginated product list. If page > totalPages, returns 200 with an empty data array and valid pagination metadata.',
   })
   @ApiBadRequestResponse({
+    type: ErrorResponseDto,
     description: 'Invalid query parameters or failed constraints',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 400 },
-        error: { type: 'string', example: 'Bad Request' },
-        message: {
-          oneOf: [
-            { type: 'string', example: 'minPrice must be less than or equal to maxPrice' },
-            {
-              type: 'array',
-              items: { type: 'string' },
-              example: [
-                'minPrice must be less than or equal to maxPrice',
-                'limit must not be greater than 48',
-              ],
-            },
-          ],
-        },
-        path: { type: 'string', example: '/products?minPrice=50&maxPrice=10' },
-        timestamp: { type: 'string', example: '2026-10-03T16:00:00.000Z' },
-      },
-      required: ['statusCode', 'error', 'message', 'path', 'timestamp'],
-    },
   })
   async findAll(@Query() query: ListProductsQueryDto): Promise<PaginatedProductsDto> {
     return this.productsService.findAll(query);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a product by its unique integer identifier' })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Unique product integer identifier',
+  })
+  @ApiOkResponse({
+    type: ProductDto,
+    description: 'Product details with associated category and sorted images',
+  })
+  @ApiBadRequestResponse({
+    type: ErrorResponseDto,
+    description: 'Validation failed (numeric string is expected for id)',
+  })
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    description: 'Product with the specified ID was not found',
+  })
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<ProductDto> {
+    return this.productsService.findById(id);
   }
 }

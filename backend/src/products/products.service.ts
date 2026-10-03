@@ -1,14 +1,35 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ListProductsQueryDto } from './dto/list-products-query.dto.js';
 import { PaginatedProductsDto } from './dto/paginated-products.dto.js';
+import { ProductDto } from './dto/product.dto.js';
 import { mapProductToDto } from './products.mapper.js';
 import { getProductOrderBy } from './products.sort.js';
 
 @Injectable()
 export class ProductsService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+
+  async findById(id: number): Promise<ProductDto> {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        images: {
+          orderBy: {
+            position: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product ${id} not found`);
+    }
+
+    return mapProductToDto(product);
+  }
 
   async findAll(query: ListProductsQueryDto): Promise<PaginatedProductsDto> {
     const page = query.page ?? 1;
