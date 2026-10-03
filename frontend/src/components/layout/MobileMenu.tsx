@@ -105,7 +105,7 @@ export function MobileMenu() {
           </button>
         </div>
 
-        <nav className={styles.menuNav} aria-label="Mobile Primary">
+        <nav className={styles.menuNav} aria-label="Primary">
           <ul className={styles.navList}>
             {NAV_LINKS.map((link) => (
               <li key={link.href} className={styles.navItem}>

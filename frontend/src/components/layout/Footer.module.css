@@ -207,47 +207,24 @@
   width: 100%;
 }
 
-.sectionHeader {
+.sectionHeaderBtn {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 0;
-  cursor: pointer;
-}
-
-.sectionTitle {
-  font-family: var(--font-ui);
-  font-size: 16px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
-  color: var(--color-white);
-  line-height: 1.2;
-  margin: 0;
-}
-
-.brandTitle {
-  font-family: var(--font-ui);
-  font-size: 16px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
-  color: var(--color-white);
-  line-height: 1.2;
-  margin: 0;
-}
-
-.toggleButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 0;
+  padding: 8px 0;
+  min-height: 44px;
   background: transparent;
-  color: var(--color-white);
+  border: 0;
   cursor: pointer;
+  color: var(--color-white);
+  font: inherit;
+  text-align: left;
+}
+
+.sectionHeaderBtn:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 2px;
 }
 
 .toggleChevron {
@@ -306,6 +283,7 @@
 }
 
 .socialLink {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -316,6 +294,12 @@
   color: var(--color-white);
   text-decoration: none;
   transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.socialLink::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
 }
 
 .socialLink:hover {
@@ -468,16 +452,19 @@
     gap: 24px;
   }
 
-  .sectionHeader {
+  .sectionHeaderBtn {
     cursor: default;
     padding: 0;
+    pointer-events: none;
+    min-height: auto;
   }
 
-  .toggleButton {
+  .sectionHeaderBtn .toggleChevron {
     display: none;
   }
 
-  .sectionPanel {
+  .sectionPanel,
+  .sectionPanel[hidden] {
     display: block !important;
     padding: 0;
   }

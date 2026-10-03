@@ -11,47 +11,34 @@ export interface FooterSectionProps {
   children: React.ReactNode;
 }
 
+/**
+ * Accessible mobile accordion / desktop static list section.
+ * On mobile (< 768px): Button toggles panel and uses hidden attribute to remove inactive items from tab order.
+ * On tablet/desktop (>= 768px): CSS overrides display: block !important and removes accordion interactions.
+ */
 export function FooterSection({ id, title, isBrandTitle, children }: FooterSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className={styles.section} data-open={isOpen ? 'true' : 'false'}>
-      <div
-        className={styles.sectionHeader}
-        onClick={() => setIsOpen((prev) => !prev)}
-        role="button"
-        tabIndex={0}
-        aria-expanded={isOpen}
-        aria-controls={id}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setIsOpen((prev) => !prev);
-          }
-        }}
-      >
-        <h2 className={isBrandTitle ? styles.brandTitle : styles.sectionTitle}>
-          {title}
-        </h2>
+      <h2 className={isBrandTitle ? styles.brandTitle : styles.sectionTitle}>
         <button
           type="button"
-          className={styles.toggleButton}
+          className={styles.sectionHeaderBtn}
           aria-expanded={isOpen}
           aria-controls={id}
-          aria-label={`Toggle ${title}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsOpen((prev) => !prev);
-          }}
+          onClick={() => setIsOpen((prev) => !prev)}
         >
+          <span>{title}</span>
           <ChevronIcon
             direction={isOpen ? 'up' : 'down'}
             size={16}
+            aria-hidden="true"
             className={styles.toggleChevron}
           />
         </button>
-      </div>
-      <div id={id} className={styles.sectionPanel}>
+      </h2>
+      <div id={id} className={styles.sectionPanel} hidden={!isOpen}>
         {children}
       </div>
     </div>

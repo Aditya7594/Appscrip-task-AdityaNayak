@@ -64,11 +64,11 @@
 }
 
 .disabled {
-  color: var(--color-tertiary-text);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
 .ellipsis {
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   cursor: default;
 }

@@ -175,6 +175,20 @@ a {
 .skip-link:focus,
 .skip-link:focus-visible {
   top: var(--spacing-16);
+  outline: 2px solid var(--color-white);
+  outline-offset: 2px;
+}
+
+/* Global Prefers Reduced Motion Reset (WCAG 2.2.2 & 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Visually Hidden Helper (WCAG accessible screen reader only text) */

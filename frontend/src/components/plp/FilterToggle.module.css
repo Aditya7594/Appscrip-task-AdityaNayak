@@ -13,7 +13,7 @@
     font-weight: 400;
     text-transform: uppercase;
     text-decoration: underline;
-    color: var(--color-secondary);
+    color: var(--color-text-muted);
     background: transparent;
     border: 0;
     cursor: pointer;
@@ -29,7 +29,7 @@
   .filterToggle .icon {
     width: 16px;
     height: 16px;
-    color: var(--color-secondary);
+    color: var(--color-text-muted);
     flex-shrink: 0;
   }
 

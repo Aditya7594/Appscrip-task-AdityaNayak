@@ -89,7 +89,15 @@ export function Footer() {
                 required
                 className={styles.newsletterInput}
               />
-              <button type="submit" disabled className={styles.newsletterButton}>
+              <p id="subscribe-disabled-note" className="visually-hidden">
+                Newsletter subscription is currently unavailable in this demonstration
+              </p>
+              <button
+                type="submit"
+                disabled
+                aria-describedby="subscribe-disabled-note"
+                className={styles.newsletterButton}
+              >
                 Subscribe
               </button>
             </form>
