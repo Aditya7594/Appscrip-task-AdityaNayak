@@ -7,7 +7,8 @@
   display: block;
 }
 
-.sidebar {
+.sidebar,
+.layout :global(#filters) {
   display: none;
 }
 
@@ -37,7 +38,8 @@
     column-gap: var(--spacing-16);
   }
 
-  .layout[data-filters="open"] .sidebar {
+  .layout[data-filters="open"] .sidebar,
+  .layout[data-filters="open"] :global(#filters) {
     display: block;
     width: 300px;
   }
@@ -46,8 +48,9 @@
     display: block;
   }
 
-  .layout[data-filters="hidden"] .sidebar {
-    display: none;
+  .layout[data-filters="hidden"] .sidebar,
+  .layout[data-filters="hidden"] :global(#filters) {
+    display: none !important;
   }
 
   /* When filters are hidden, product grid expands to 4 columns */

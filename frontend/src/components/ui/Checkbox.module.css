@@ -1,0 +1,65 @@
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-secondary);
+  font-weight: 400;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 0.75px solid var(--color-field-border);
+  background-color: var(--color-white);
+  border-radius: 2px;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.input::before {
+  content: "";
+  width: 8px;
+  height: 5px;
+  border-left: 1.75px solid var(--color-white);
+  border-bottom: 1.75px solid var(--color-white);
+  transform: rotate(-45deg) translate(0.5px, -0.5px);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.input:checked {
+  background-color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.input:checked::before {
+  opacity: 1;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}

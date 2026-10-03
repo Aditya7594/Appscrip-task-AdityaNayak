@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hero, ProductGrid, Toolbar, PlpShell } from '@/components/plp';
+import { Hero, ProductGrid, Toolbar, PlpShell, FilterSidebar } from '@/components/plp';
 import { getProducts, getCategories } from '@/lib/api';
 import { parsePlpSearchParams } from '@/lib/url';
 import styles from './ProductsPage.module.css';
@@ -12,7 +12,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const rawParams = await searchParams;
   const query = parsePlpSearchParams(rawParams);
 
-  const [paginatedProducts] = await Promise.all([
+  const [paginatedProducts, categories] = await Promise.all([
     getProducts(query),
     getCategories(),
   ]);
@@ -28,7 +28,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               currentSort={query.sort}
             />
           }
-          sidebar={<aside className={styles.sidebarPlaceholder} aria-label="Filters" />}
+          sidebar={<FilterSidebar categories={categories} />}
         >
           <ProductGrid
             products={paginatedProducts.data}

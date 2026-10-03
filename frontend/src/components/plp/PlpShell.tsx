@@ -40,25 +40,10 @@ export function PlpShell({ toolbar, sidebar, children }: PlpShellProps) {
           data-filters={filtersOpen ? 'open' : 'hidden'}
           aria-busy={navigation.isPending}
         >
-          {sidebar ? (
-            <>
-              {React.isValidElement(sidebar) && sidebar.type === 'aside' ? (
-                React.cloneElement(sidebar as React.ReactElement<{ id?: string; className?: string }>, {
-                  id: 'filters',
-                  className: `${styles.sidebar} ${(sidebar.props as { className?: string }).className || ''}`.trim(),
-                })
-              ) : (
-                <aside id="filters" className={styles.sidebar} aria-label="Filters">
-                  {sidebar}
-                </aside>
-              )}
-              <div className={styles.results} data-results>
-                {children}
-              </div>
-            </>
-          ) : (
-            children
-          )}
+          {sidebar}
+          <div className={styles.results} data-results>
+            {children}
+          </div>
         </div>
       </div>
     </PlpContext.Provider>

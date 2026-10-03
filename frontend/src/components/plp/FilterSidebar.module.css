@@ -1,0 +1,13 @@
+.filters {
+  display: block;
+  width: 300px;
+  box-sizing: border-box;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background-color: var(--color-hairline);
+  width: 300px;
+  margin: 0;
+}
