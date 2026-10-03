@@ -17,6 +17,16 @@ describe('App (e2e)', () => {
       .useValue({
         $connect: vitest.fn().mockResolvedValue(undefined),
         $disconnect: vitest.fn().mockResolvedValue(undefined),
+        category: {
+          findMany: vitest.fn().mockResolvedValue([
+            {
+              id: 1,
+              slug: 'electronics',
+              name: 'Electronics',
+              _count: { products: 6 },
+            },
+          ]),
+        },
       })
       .compile();
 
@@ -43,6 +53,20 @@ describe('App (e2e)', () => {
     expect(response.body).toHaveProperty('status', 'ok');
     expect(typeof response.body.uptime).toBe('number');
     expect(typeof response.body.timestamp).toBe('string');
+  });
+
+  it('/categories (GET) returns categories array with Cache-Control header', async () => {
+    const response = await request(app.getHttpServer()).get('/categories').expect(200);
+
+    expect(response.headers['cache-control']).toBe('public, max-age=60');
+    expect(response.body).toEqual([
+      {
+        id: 1,
+        slug: 'electronics',
+        name: 'Electronics',
+        productCount: 6,
+      },
+    ]);
   });
 
   it('/nonexistent (GET) returns 404 with standard error shape', async () => {
