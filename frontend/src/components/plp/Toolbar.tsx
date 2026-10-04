@@ -25,27 +25,15 @@ export function Toolbar({
 
   return (
     <div className={styles.toolbar}>
-      {/* Mobile Filter Bar (<= 767px): 41px bar */}
-      <div className={styles.mobileContainer}>
-        <span className="visually-hidden">{formattedCount} items</span>
-        <MobileFilterBar
-          total={total}
-          currentSort={currentSort}
-          categories={categories}
-          variant="full"
-        />
-      </div>
-
-      {/* Tablet Toolbar Controls (768px - 1199px): count + compact mobile filter bar */}
-      <div className={styles.tabletContainer}>
-        <p className={styles.count}>
+      {/* Responsive Filter Bar (< 1200px): count (visible 768-1199px) + mobile filter bar */}
+      <div className={styles.responsiveContainer}>
+        <p className={styles.responsiveCount}>
           <span>{formattedCount}</span> items
         </p>
         <MobileFilterBar
           total={total}
           currentSort={currentSort}
           categories={categories}
-          variant="compact"
         />
       </div>
 

@@ -107,8 +107,10 @@ export function Footer() {
 
           {/* Column 2 (Mobile only): Contact & Currency */}
           <div className={styles.contactCol}>
-            <h2 className={`${styles.footerTitle} ${styles.contactTitleMobile}`}>Call Us</h2>
-            <h2 className={`${styles.footerTitle} ${styles.contactTitleDesktop}`}>Contact us</h2>
+            <h2 className={styles.footerTitle}>
+              <span className={styles.contactTitleMobile}>Call Us</span>
+              <span className={styles.contactTitleDesktop}>Contact us</span>
+            </h2>
 
             <div className={styles.contactRow}>
               <a href="tel:+442211335360" className={styles.contactLink}>

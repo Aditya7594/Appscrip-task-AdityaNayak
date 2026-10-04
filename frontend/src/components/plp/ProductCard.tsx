@@ -31,6 +31,8 @@ export function ProductCard({ product, index, page = 1 }: ProductCardProps) {
             sizes="(max-width: 767px) 50vw, (max-width: 1199px) 33vw, 300px"
             priority={isPriority}
             loading={isPriority ? undefined : 'lazy'}
+            decoding={isPriority ? 'sync' : 'async'}
+            quality={75}
             className={styles.productImage}
           />
         </div>
