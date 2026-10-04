@@ -92,11 +92,3 @@
   flex-direction: column;
   gap: var(--spacing-24);
 }
-
-.divider {
-  border: 0;
-  height: 1px;
-  background-color: var(--color-hairline);
-  width: 300px;
-  margin: 0;
-}

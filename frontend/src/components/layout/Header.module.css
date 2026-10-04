@@ -95,31 +95,6 @@
   box-sizing: border-box;
 }
 
-.headerHamburger {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  color: var(--color-icon);
-  z-index: 10;
-}
-
-.hamburgerIcon {
-  width: 20px;
-  height: 20px;
-  color: var(--color-icon);
-  display: block;
-}
-
 .brandMark {
   position: absolute;
   left: 44px;
@@ -209,10 +184,6 @@
 @media (min-width: 768px) {
   .headerMain {
     height: 188px;
-  }
-
-  .headerHamburger {
-    display: none;
   }
 
   .brandMark {
