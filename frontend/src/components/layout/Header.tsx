@@ -11,14 +11,7 @@ import {
   Element4Icon,
 } from '@/components/ui/icons';
 import { MobileMenu } from './MobileMenu';
-
-const NAV_LINKS = [
-  { href: '/products', label: 'SHOP' },
-  { href: '/skills', label: 'SKILLS' },
-  { href: '/stories', label: 'STORIES' },
-  { href: '/about', label: 'ABOUT' },
-  { href: '/contact', label: 'CONTACT US' },
-];
+import { HeaderNav } from './HeaderNav';
 
 export function Header() {
   return (
@@ -86,17 +79,7 @@ export function Header() {
           </div>
 
           {/* Primary Navigation */}
-          <nav className={styles.headerNav} aria-label="Primary">
-            <ul className={styles.navList}>
-              {NAV_LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className={styles.navLink}>
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <HeaderNav />
         </div>
       </div>
     </header>

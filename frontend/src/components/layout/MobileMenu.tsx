@@ -2,16 +2,10 @@
 
 import React, { useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { HamburgerIcon, CloseIcon } from '@/components/ui/icons';
+import { NAV_LINKS } from './HeaderNav';
 import styles from './MobileMenu.module.css';
-
-const NAV_LINKS = [
-  { href: '/products', label: 'SHOP' },
-  { href: '/skills', label: 'SKILLS' },
-  { href: '/stories', label: 'STORIES' },
-  { href: '/about', label: 'ABOUT' },
-  { href: '/contact', label: 'CONTACT US' },
-];
 
 /**
  * Mobile menu drawer built on the native <dialog> element.
@@ -19,8 +13,17 @@ const NAV_LINKS = [
  * Rendered only below 1200px.
  */
 export function MobileMenu() {
+  const pathname = usePathname();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
+
+  const isLinkActive = useCallback((href: string): boolean => {
+    if (!pathname) return false;
+    if (href === '/products') {
+      return pathname === '/products' || pathname.startsWith('/products/') || pathname === '/shop' || pathname === '/';
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }, [pathname]);
 
   const lockBodyScroll = useCallback(() => {
     document.body.style.overflow = 'hidden';
@@ -107,17 +110,21 @@ export function MobileMenu() {
 
         <nav className={styles.menuNav} aria-label="Primary">
           <ul className={styles.navList}>
-            {NAV_LINKS.map((link) => (
-              <li key={link.href} className={styles.navItem}>
-                <Link
-                  href={link.href}
-                  className={styles.navLink}
-                  onClick={closeMenu}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const active = isLinkActive(link.href);
+              return (
+                <li key={link.href} className={styles.navItem}>
+                  <Link
+                    href={link.href}
+                    className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
+                    aria-current={active ? 'page' : undefined}
+                    onClick={closeMenu}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </dialog>

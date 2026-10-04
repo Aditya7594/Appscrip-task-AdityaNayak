@@ -179,8 +179,11 @@
 }
 
 .navLink:hover,
-.navLink:focus-visible {
+.navLink:focus-visible,
+.navLinkActive {
   color: var(--color-primary);
+  text-decoration: underline 2px solid currentColor;
+  text-underline-offset: 6px;
 }
 
 .navLink:focus-visible {
