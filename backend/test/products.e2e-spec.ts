@@ -24,18 +24,18 @@ describe('Products (e2e)', () => {
   }
 
   describe('GET /products (Listing, Pagination, Filtering, Sorting)', () => {
-    it('returns default response shape and pagination meta (limit 12, total 15)', async () => {
+    it('returns default response shape and pagination meta (limit 18, total 15)', async () => {
       const response = await request(ctx.app.getHttpServer()).get('/products').expect(200);
 
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty('meta');
-      expect(response.body.data).toHaveLength(12);
+      expect(response.body.data).toHaveLength(15);
       expect(response.body.meta).toEqual({
         page: 1,
-        limit: 12,
+        limit: 18,
         total: 15,
-        totalPages: 2,
-        hasNextPage: true,
+        totalPages: 1,
+        hasNextPage: false,
         hasPreviousPage: false,
       });
 

@@ -7,7 +7,7 @@ describe('ListProductsQueryDto', () => {
   it('should initialize with correct default values', () => {
     const dto = plainToInstance(ListProductsQueryDto, {});
     expect(dto.page).toBe(1);
-    expect(dto.limit).toBe(12);
+    expect(dto.limit).toBe(18);
     expect(dto.sort).toBe(ProductSortOrder.RECOMMENDED);
   });
 
