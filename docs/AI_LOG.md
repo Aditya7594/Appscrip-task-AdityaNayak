@@ -1,6 +1,8 @@
 # AI usage log
 
 > Note: Log at least one real correction per phase.
+>
+> Tools: Antigravity IDE + Gemini 3.8 and DeepSeek V4 Pro (both on high reasoning).
 
 | Date | Tool | Task | What the AI got wrong or I rejected | How I corrected it |
 | :--- | :--- | :--- | :--- | :--- |

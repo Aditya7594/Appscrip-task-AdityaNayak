@@ -407,9 +407,8 @@ All third-party dependencies are strictly justified. No bloated UI component lib
 ## 8. AI Usage
 
 ### AI Tools Utilized
-- **Antigravity IDE + Gemini**: primary development assistant across all phases (every phase in [`docs/AI_LOG.md`](docs/AI_LOG.md) is logged as "Antigravity IDE / Gemini"). TODO(me): confirm the exact Gemini model — an earlier draft of this README claimed "Gemini 3.8 Flash", but the log only records "Gemini".
+- **Antigravity IDE + Gemini 3.8** and **DeepSeek V4 Pro** (both on high reasoning): the two AI assistants used across all development phases.
 - **CodeBuddy**: performed the excess-code audit and cleanup described below (2026-10-04).
-- TODO(me): an earlier draft of this README also listed "Cursor / Claude Code" as editing/review tools, but `docs/AI_LOG.md` does not record this — confirm or remove.
 
 ### Where AI Helped
 - **Scaffolding & Architecture**: Initialized the monorepo structure, Prisma migrations, and NestJS module organization.
