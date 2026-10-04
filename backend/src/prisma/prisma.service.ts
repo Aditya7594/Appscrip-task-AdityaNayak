@@ -93,70 +93,47 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       const rand = createMulberry32(123456789);
       const now = Date.now();
       let prodId = 1;
+      const usedSlugs = new Set<string>();
 
       for (let i = 0; i < rawData.length; i++) {
         const raw = rawData[i];
         const cat = categoryMap.get(raw.category)!;
-        const baseSlug = slugify(raw.title);
-        const baseDaysAgo = i * 2;
-        const baseCreatedAt = new Date(now - baseDaysAgo * 86400000);
-
-        const items = [
-          {
-            slug: baseSlug,
-            title: raw.title,
-            description: raw.description,
-            price: Number(raw.price.toFixed(2)),
-            rating: Math.min(5, Math.max(0, Math.round(raw.rating.rate * 10) / 10)),
-            ratingCount: Number(raw.rating.count) || 100,
-            createdAt: baseCreatedAt,
-          },
-          {
-            slug: `${baseSlug}-midnight`,
-            title: `${raw.title} - Midnight`,
-            description: `${raw.description} Limited edition Midnight colorway with signature styling.`,
-            price: Math.max(1, Math.round(raw.price * (0.85 + rand() * 0.3) * 100) / 100),
-            rating: Math.min(5, Math.max(0, Math.round((raw.rating.rate + (rand() - 0.5) * 0.8) * 10) / 10)),
-            ratingCount: Math.max(5, Math.round((Number(raw.rating.count) || 100) * (0.6 + rand() * 0.8))),
-            createdAt: new Date(now - (baseDaysAgo + Math.floor(rand() * 5) + 1) * 86400000),
-          },
-          {
-            slug: `${baseSlug}-sand`,
-            title: `${raw.title} - Sand`,
-            description: `${raw.description} Crafted in an understated Sand palette designed for everyday wear.`,
-            price: Math.max(1, Math.round(raw.price * (0.85 + rand() * 0.3) * 100) / 100),
-            rating: Math.min(5, Math.max(0, Math.round((raw.rating.rate + (rand() - 0.5) * 0.8) * 10) / 10)),
-            ratingCount: Math.max(5, Math.round((Number(raw.rating.count) || 100) * (0.6 + rand() * 0.8))),
-            createdAt: new Date(now - (baseDaysAgo + Math.floor(rand() * 5) + 2) * 86400000),
-          },
-        ];
-
-        for (const item of items) {
-          const currentId = prodId++;
-          products.push({
-            id: currentId,
-            slug: item.slug,
-            title: item.title,
-            description: item.description,
-            price: new Prisma.Decimal(item.price),
-            currency: 'USD',
-            rating: item.rating,
-            ratingCount: item.ratingCount,
-            categoryId: cat.id,
-            category: cat,
-            createdAt: item.createdAt,
-            updatedAt: item.createdAt,
-            images: [
-              {
-                id: currentId,
-                productId: currentId,
-                url: `/products/${item.slug}.jpg`,
-                alt: `${item.title} - ${cat.name} product photo`,
-                position: 0,
-              },
-            ],
-          });
+        let slug = slugify(raw.title);
+        if (usedSlugs.has(slug)) {
+          slug = `${slug}-${raw.id}`;
         }
+        usedSlugs.add(slug);
+
+        const baseDaysAgo = i;
+        const baseCreatedAt = new Date(now - baseDaysAgo * 86400000);
+        const rawPrice = Number(raw.price) || 0;
+        const rawRate = Number(raw.rating?.rate) || 0;
+        const rawCount = Math.round(Number(raw.rating?.count)) || 0;
+
+        const currentId = prodId++;
+        products.push({
+          id: currentId,
+          slug,
+          title: raw.title,
+          description: raw.description,
+          price: new Prisma.Decimal(rawPrice),
+          currency: 'USD',
+          rating: Math.min(5, Math.max(0, Math.round(rawRate * 10) / 10)),
+          ratingCount: rawCount,
+          categoryId: cat.id,
+          category: cat,
+          createdAt: baseCreatedAt,
+          updatedAt: baseCreatedAt,
+          images: [
+            {
+              id: currentId,
+              productId: currentId,
+              url: `/products/${slug}.jpg`,
+              alt: `${raw.title} - ${cat.name} product photo`,
+              position: 0,
+            },
+          ],
+        });
       }
     }
 

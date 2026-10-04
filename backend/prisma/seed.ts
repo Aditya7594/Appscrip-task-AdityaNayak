@@ -97,8 +97,14 @@ async function main(): Promise<void> {
   const rand = createMulberry32(123456789);
   const now = Date.now();
 
+  // Clean wipe existing products & images to replace with new clean catalog
+  await prisma.productImage.deleteMany();
+  await prisma.product.deleteMany();
+  console.log('Cleaned previous products and images from database.');
+
   let totalProducts = 0;
   let totalImages = 0;
+  const usedSlugs = new Set<string>();
 
   for (let i = 0; i < rawProducts.length; i++) {
     const raw = rawProducts[i];
@@ -107,106 +113,65 @@ async function main(): Promise<void> {
       throw new Error(`Category not found for product: ${raw.title}`);
     }
 
-    const baseSlug = slugify(raw.title);
-    const baseDaysAgo = i * 2; // Staggered creation date
+    let slug = slugify(raw.title);
+    if (usedSlugs.has(slug)) {
+      slug = `${slug}-${raw.id}`;
+    }
+    usedSlugs.add(slug);
+
+    const baseDaysAgo = i; // Staggered creation date
     const baseCreatedAt = new Date(now - baseDaysAgo * 86400000);
 
     const rawPrice = Number(raw.price) || 0;
     const rawRate = Number(raw.rating?.rate) || 0;
     const rawCount = Math.round(Number(raw.rating?.count)) || 0;
 
-    // Items list for product: base + 2 variants
-    const itemsToUpsert = [
-      {
-        slug: baseSlug,
+    const product = await prisma.product.upsert({
+      where: { slug },
+      update: {
         title: raw.title,
         description: raw.description,
-        price: Number(rawPrice.toFixed(2)),
+        price: new Prisma.Decimal(rawPrice),
         rating: Math.min(5, Math.max(0, Math.round(rawRate * 10) / 10)),
         ratingCount: rawCount,
+        categoryId: categoryInfo.id,
         createdAt: baseCreatedAt,
-        isVariant: false,
       },
-      {
-        slug: `${baseSlug}-midnight`,
-        title: `${raw.title} - Midnight`,
-        description: `${raw.description} Limited edition Midnight colorway with signature styling.`,
-        price: Math.max(1, Math.round(rawPrice * (0.85 + rand() * 0.3) * 100) / 100),
-        rating: Math.min(5, Math.max(0, Math.round((rawRate + (rand() - 0.5) * 0.8) * 10) / 10)),
-        ratingCount: Math.max(5, Math.round(rawCount * (0.6 + rand() * 0.8))),
-        createdAt: new Date(now - (baseDaysAgo + Math.floor(rand() * 5) + 1) * 86400000),
-        isVariant: true,
+      create: {
+        slug,
+        title: raw.title,
+        description: raw.description,
+        price: new Prisma.Decimal(rawPrice),
+        rating: Math.min(5, Math.max(0, Math.round(rawRate * 10) / 10)),
+        ratingCount: rawCount,
+        categoryId: categoryInfo.id,
+        createdAt: baseCreatedAt,
       },
-      {
-        slug: `${baseSlug}-sand`,
-        title: `${raw.title} - Sand`,
-        description: `${raw.description} Crafted in an understated Sand palette designed for everyday wear.`,
-        price: Math.max(1, Math.round(rawPrice * (0.85 + rand() * 0.3) * 100) / 100),
-        rating: Math.min(5, Math.max(0, Math.round((rawRate + (rand() - 0.5) * 0.8) * 10) / 10)),
-        ratingCount: Math.max(5, Math.round(rawCount * (0.6 + rand() * 0.8))),
-        createdAt: new Date(now - (baseDaysAgo + Math.floor(rand() * 5) + 2) * 86400000),
-        isVariant: true,
-      },
-    ];
+    });
 
-    for (const item of itemsToUpsert) {
-      const product = await prisma.product.upsert({
-        where: { slug: item.slug },
-        update: {
-          title: item.title,
-          description: item.description,
-          price: new Prisma.Decimal(item.price),
-          rating: item.rating,
-          ratingCount: item.ratingCount,
-          categoryId: categoryInfo.id,
-          createdAt: item.createdAt,
-        },
-        create: {
-          slug: item.slug,
-          title: item.title,
-          description: item.description,
-          price: new Prisma.Decimal(item.price),
-          rating: item.rating,
-          ratingCount: item.ratingCount,
-          categoryId: categoryInfo.id,
-          createdAt: item.createdAt,
-        },
-      });
+    totalProducts++;
 
-      totalProducts++;
-
-      // Copy image for variant if needed
-      if (item.isVariant) {
-        const baseImgPath = path.join(IMAGES_DIR, `${baseSlug}.jpg`);
-        const variantImgPath = path.join(IMAGES_DIR, `${item.slug}.jpg`);
-        if (fs.existsSync(baseImgPath) && !fs.existsSync(variantImgPath)) {
-          fs.copyFileSync(baseImgPath, variantImgPath);
-        }
-      }
-
-      // Upsert single ProductImage at position 0
-      const altText = formatAltText(item.title, categoryInfo.name);
-      await prisma.productImage.upsert({
-        where: {
-          productId_position: {
-            productId: product.id,
-            position: 0,
-          },
-        },
-        update: {
-          url: `/products/${item.slug}.jpg`,
-          alt: altText,
-        },
-        create: {
+    const altText = formatAltText(raw.title, categoryInfo.name);
+    await prisma.productImage.upsert({
+      where: {
+        productId_position: {
           productId: product.id,
-          url: `/products/${item.slug}.jpg`,
-          alt: altText,
           position: 0,
         },
-      });
+      },
+      update: {
+        url: `/products/${slug}.jpg`,
+        alt: altText,
+      },
+      create: {
+        productId: product.id,
+        url: `/products/${slug}.jpg`,
+        alt: altText,
+        position: 0,
+      },
+    });
 
-      totalImages++;
-    }
+    totalImages++;
   }
 
   const categoryCount = await prisma.category.count();
