@@ -407,8 +407,9 @@ All third-party dependencies are strictly justified. No bloated UI component lib
 ## 8. AI Usage
 
 ### AI Tools Utilized
-- **Antigravity IDE with Gemini 3.8 Flash**: Main development assistant for scaffolding, implementing features, continuous test execution, and deployment verification.
-- **Cursor / Claude Code**: Code editing, architectural review, and refactoring passes.
+- **Antigravity IDE + Gemini**: primary development assistant across all phases (every phase in [`docs/AI_LOG.md`](docs/AI_LOG.md) is logged as "Antigravity IDE / Gemini"). TODO(me): confirm the exact Gemini model — an earlier draft of this README claimed "Gemini 3.8 Flash", but the log only records "Gemini".
+- **CodeBuddy**: performed the excess-code audit and cleanup described below (2026-10-04).
+- TODO(me): an earlier draft of this README also listed "Cursor / Claude Code" as editing/review tools, but `docs/AI_LOG.md` does not record this — confirm or remove.
 
 ### Where AI Helped
 - **Scaffolding & Architecture**: Initialized the monorepo structure, Prisma migrations, and NestJS module organization.
@@ -416,17 +417,39 @@ All third-party dependencies are strictly justified. No bloated UI component lib
 - **Automated Test Generation**: Developed 35 Vitest unit tests covering URL serialization and pagination boundaries, plus comprehensive Playwright end-to-end suites.
 - **Documentation**: Extracted Figma token specifications into `docs/DESIGN_SPEC.md` and compiled compliance audits.
 
-### Concrete Correction Examples
-Real corrections where AI output was rejected or corrected (from [docs/AI_LOG.md](docs/AI_LOG.md)):
-1. **Prisma 8.0.0-rc CLI Breakage**: `npm` automatically pulled an experimental Prisma 8.0 release candidate preview platform CLI that broke standard migrations and client generation. We rejected the release candidate, downgraded, and pinned the build to stable Prisma `6.19.3`.
-2. **React 19 `set-state-in-effect` Violation**: An initial AI-generated wishlist implementation triggered React 19 linter errors by calling `setState` inside `useEffect` during hydration. We refactored it to `useSyncExternalStore` for clean, hydration-safe `localStorage` synchronization.
-3. **WCAG AA Text Contrast Failure**: AI initially suggested using Figma's `#888792` token for body copy. We audited the contrast ratio (3.54:1 on white, failing WCAG 4.5:1) and overrode it with `#6B6A75` (5.33:1) for all body text.
-4. **Turbopack Caching Bug**: A catch-all route rule (`source: "/products/:path*"`) mistakenly marked dynamic SSR pages as immutable. We corrected the regex to strictly match static image extensions, preserving dynamic SSR headers on `/products`.
+### Excess-Code Audit (2026-10-04)
+A repository-wide audit removed AI-generated excess code without changing behavior, URLs, API contracts, or visual design. Tools: `knip`, `jscpd`, `depcheck`, `tsc --noUnusedLocals --noUnusedParameters`, `oxlint` (backend), `eslint` (frontend), and a manual dead-CSS / `"use client"` pass.
+
+| What the AI suggested | What I did | Why | Commit |
+| :--- | :--- | :--- | :--- |
+| 15 files with an unused `import React from 'react'` | removed the imports | React 19's automatic JSX runtime needs no default React import | `854818a` |
+| 2 unused barrel files (`components/ui/index.ts`, `types/index.ts`) | deleted them | never imported | `083d1eb` |
+| dead re-exports (`PAGE_SIZE`, `SITE_URL`, `SORT_KEYS`, `type SortOption`) and unused `export` on `ProductImage` / `ProductCategory` / `PaginatedMeta` | removed the re-exports and `export` keywords | verified unused by `knip` + `tsc` | `1b88fea` |
+| 4 files with dead CSS Module classes (`.headerHamburger`/`.hamburgerIcon`, `.divider`, `.sidebar`, `.sidebarPlaceholder`) | removed the rules | zero `styles.*` references | `8c84e16` |
+| unused PRNG (`createMulberry32` + `rand`) in `backend/prisma/seed.ts` | removed it | variable never read | `cf1cc06` |
+| dead `IsLessThanOrEqual` export (DTO) and dead `FixtureData` / `FIXTURE_*` exports (test helper) | un-exported / removed | unused (`knip`) | `6df24c0` |
+
+**Reviewed, left as-is (SSR / visual risk):**
+- Duplicated redirect block in `products/page.tsx` (in `generateMetadata` and the page body) — both are required by Next.js; consolidating touches the SSR redirect path.
+- Duplicated nav-link array in `HeaderNav.tsx` / `MobileMenu.tsx` — two components with active-state logic.
+- Repeated footer link lists and skeleton cards — data/design-driven repetition.
+- Shared CSS Module blocks (`not-found` / `error` / `EmptyState`) — consolidation risks visual regression.
+
+**Reviewed, left as-is (dependencies):**
+- `source-map-support` — unused devDependency; left because removal touches `package-lock.json`.
+- `@nestjs/mau` — used by the `nest deploy` script (a `depcheck` false positive).
+- `express` — transitive via `@nestjs/platform-express` (standard NestJS pattern; `depcheck` flags it as "unlisted").
+
+### Rejected or Corrected AI Output
+1. **(this audit)** I first removed the `SORT_OPTIONS` re-export from `SortDropdown.tsx` as "dead", but `Toolbar.test.ts` imports it — typecheck and the unit test failed. Corrected to keep the `SORT_OPTIONS` re-export and remove only the unused `type SortOption`.
+2. **Prisma 8.0.0-rc CLI breakage** — pinned to stable `6.19.3` (see `docs/AI_LOG.md`).
+3. **React 19 `set-state-in-effect`** — refactored to `useSyncExternalStore` (see `docs/AI_LOG.md`).
+4. **WCAG AA contrast** — overrode `#888792` (3.54:1) with `#6B6A75` (5.33:1) (see `docs/AI_LOG.md`).
 
 ### Project Context Files
-- [`AGENTS.md`](AGENTS.md) — Operational instructions and engineering conventions.
-- [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md) — Design tokens, typography scales, and layout metrics extracted from Figma.
-- [`docs/AI_LOG.md`](docs/AI_LOG.md) — Complete chronological log of AI assistance and human corrections across every project phase.
+- [`AGENTS.md`](AGENTS.md) — operational rules and the API contract; treated as the authoritative "no behavior / URL / API / visual change" constraint during the audit.
+- [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md) — design tokens and layout metrics; used as the reference to confirm the CSS removals were dead classes, not design values.
+- [`docs/AI_LOG.md`](docs/AI_LOG.md) — chronological log of AI assistance and human corrections across every phase (updated with this audit).
 
 ---
 
@@ -448,3 +471,5 @@ Real corrections where AI output was rejected or corrected (from [docs/AI_LOG.md
    - Secondary header links (`SKILLS`, `STORIES`, `ABOUT`, `CONTACT US`), utility tool buttons (`Wishlist`, `Bag`, `Profile`), and footer policy links are pointed to `#` (with click-interception) as decorative placeholders matching Figma visual fidelity. The assignment specifically scopes the Product Listing Page (PLP) and its active shop navigation, so non-PLP marketing pages are intentionally decorative to avoid 404s.
 8. **Mock Catalog Category Mapping**:
    - To upgrade the catalog to 60 clean, high-resolution lifestyle images from DummyJSON while strictly preserving the 4 canonical FakeStore API categories (`electronics`, `jewelery`, `men's clothing`, `women's clothing`) required by the assignment specification, items were grouped under their nearest canonical category (e.g., luxury perfumes and watches under `jewelery`, sunglasses under `men's clothing`, handbags under `women's clothing`). In a dedicated e-commerce catalog, dedicated subcategory hierarchies (`fragrances`, `eyewear`, `leather-goods`) would be created.
+9. **Catalog Data Provenance**:
+   - The committed 60-item snapshot at `backend/prisma/data/fakestore-products.json` was generated from DummyJSON by the one-off script `backend/scripts/fetch-dummyjson-catalog.ts`. The script is retained for data provenance; its output is committed so the seed (`npm run seed`) runs fully offline without re-fetching.
