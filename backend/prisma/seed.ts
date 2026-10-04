@@ -25,17 +25,6 @@ const IMAGES_DIR = path.resolve(__dirname, '../../frontend/public/products');
 
 const prisma = new PrismaClient();
 
-// Mulberry32 seeded pseudo-random number generator
-function createMulberry32(seed: number): () => number {
-  let s = seed;
-  return function (): number {
-    s += 0x6d2b79f5;
-    let t = Math.imul(s ^ (s >>> 15), 1 | s);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 function toTitleCase(str: string): string {
   return str
     .split(' ')
@@ -93,8 +82,6 @@ async function main(): Promise<void> {
     console.log(`Category: "${category.name}" (slug: ${category.slug}) [ID: ${category.id}]`);
   }
 
-  // PRNG with fixed seed for deterministic variants
-  const rand = createMulberry32(123456789);
   const now = Date.now();
 
   // Clean wipe existing products & images to replace with new clean catalog
