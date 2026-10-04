@@ -7,9 +7,10 @@ A production-grade, pixel-perfect e-commerce Product Listing Page (PLP) featurin
 ## 1. Live URLs
 
 - **GitHub Repository**: [https://github.com/Aditya7594/Appscrip-task-AdityaNayak](https://github.com/Aditya7594/Appscrip-task-AdityaNayak)
-- **Live Frontend (Vercel)**: `https://appscrip-task-aditya-nayak.vercel.app` *(Pending initial deployment)*
-- **Live REST API (Render)**: `https://plp-api-adityanayak.onrender.com` *(Pending initial deployment)*
-- **Live OpenAPI / Swagger Docs**: `https://plp-api-adityanayak.onrender.com/docs`
+- **Live Frontend (Netlify)**: [https://appscrip-task-adityanayak.netlify.app](https://appscrip-task-adityanayak.netlify.app)
+- **Live REST API (Render)**: [https://appscrip-task-adityanayak.onrender.com](https://appscrip-task-adityanayak.onrender.com)
+- **Live OpenAPI / Swagger Docs**: [https://appscrip-task-adityanayak.onrender.com/docs](https://appscrip-task-adityanayak.onrender.com/docs)
+- **API Health Endpoint**: [https://appscrip-task-adityanayak.onrender.com/health](https://appscrip-task-adityanayak.onrender.com/health)
 
 ---
 
