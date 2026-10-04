@@ -32,4 +32,6 @@ yarn-debug.log*
 yarn-error.log*
 .idea/
 .vscode/
+.codebuddy/
 *.swp
+_*.py
