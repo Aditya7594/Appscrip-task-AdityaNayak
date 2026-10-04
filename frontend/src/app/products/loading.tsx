@@ -1,4 +1,3 @@
-import React from 'react';
 import { Breadcrumb, Hero, ProductGridSkeleton } from '@/components/plp';
 import styles from './loading.module.css';
 

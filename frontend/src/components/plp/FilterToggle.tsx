@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { usePlp } from './PlpContext';
 import { ChevronIcon } from '@/components/ui/icons';
 import styles from './FilterToggle.module.css';

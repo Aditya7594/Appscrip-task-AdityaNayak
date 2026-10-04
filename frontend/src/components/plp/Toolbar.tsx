@@ -1,4 +1,3 @@
-import React from 'react';
 import { SortKey } from '@/types/plp';
 import { Category } from '@/types/product';
 import { FilterToggle } from './FilterToggle';

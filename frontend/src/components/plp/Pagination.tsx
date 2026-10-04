@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { PlpQuery } from '@/types/plp';
 import { buildPlpHref, getPaginationItems } from '@/lib/url';

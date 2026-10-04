@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './ProductGrid.module.css';
 import { Product } from '@/types/product';
 import { ProductCard } from './ProductCard';
