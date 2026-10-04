@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('SSR & SEO Raw HTML verification (no browser JS)', () => {
-  test('GET /products raw HTML contains 12 titles, title, canonical, og:title, and JSON-LD ItemList', async ({
+  test('GET /products raw HTML contains 18 titles, title, canonical, og:title, and JSON-LD ItemList', async ({
     request,
   }) => {
     // Fetch raw HTML directly via request API without executing any client JS
@@ -30,13 +30,13 @@ test.describe('SSR & SEO Raw HTML verification (no browser JS)', () => {
     expect(itemList).toBeDefined();
     expect(itemList['@type']).toBe('ItemList');
     expect(Array.isArray(itemList.itemListElement)).toBe(true);
-    expect(itemList.itemListElement.length).toBe(12);
+    expect(itemList.itemListElement.length).toBe(18);
 
-    // 5. Verify raw HTML contains 12 product titles from backend API
-    const apiRes = await request.get('http://localhost:4000/products?page=1&limit=12');
+    // 5. Verify raw HTML contains 18 product titles from backend API
+    const apiRes = await request.get('http://localhost:4000/products?page=1&limit=18');
     expect(apiRes.ok()).toBe(true);
     const apiData = await apiRes.json();
-    expect(apiData.data).toHaveLength(12);
+    expect(apiData.data).toHaveLength(18);
 
     for (const product of apiData.data) {
       expect(html).toContain(product.title);

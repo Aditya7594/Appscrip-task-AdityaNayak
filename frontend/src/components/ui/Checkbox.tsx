@@ -11,6 +11,7 @@ export interface CheckboxProps {
   count?: number;
   className?: string;
   disabled?: boolean;
+  size?: 'default' | 'large';
 }
 
 export function Checkbox({
@@ -23,10 +24,13 @@ export function Checkbox({
   count,
   className = '',
   disabled = false,
+  size = 'default',
 }: CheckboxProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.checked);
   };
+
+  const isLarge = size === 'large';
 
   return (
     <label className={`${styles.check} ${className}`}>
@@ -38,9 +42,9 @@ export function Checkbox({
         checked={checked}
         onChange={handleChange}
         disabled={disabled}
-        className={styles.input}
+        className={`${styles.input} ${isLarge ? styles.inputLarge : ''}`}
       />
-      <span className={styles.label}>
+      <span className={`${styles.label} ${isLarge ? styles.labelLarge : ''}`}>
         <span>{label}</span>
         {typeof count === 'number' && (
           <span className={styles.count}>({count})</span>

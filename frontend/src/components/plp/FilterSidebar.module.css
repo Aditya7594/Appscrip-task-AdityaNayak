@@ -5,6 +5,13 @@
   box-sizing: border-box;
 }
 
+.customizableRow {
+  padding-bottom: var(--spacing-24);
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .divider {
   border: 0;
   height: 1px;

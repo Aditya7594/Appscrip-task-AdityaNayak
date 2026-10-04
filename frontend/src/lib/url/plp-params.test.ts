@@ -287,7 +287,7 @@ describe('plp-params', () => {
   });
 
   describe('toApiQuery', () => {
-    it('transforms PlpQuery into API query record with default limit 12', () => {
+    it('transforms PlpQuery into API query record with default limit 18', () => {
       const query: PlpQuery = {
         page: 2,
         sort: 'newest',
@@ -309,7 +309,7 @@ describe('plp-params', () => {
         minRating: 4,
         q: 'ring',
       });
-      expect(PAGE_SIZE).toBe(12);
+      expect(PAGE_SIZE).toBe(18);
     });
 
     it('handles minimal query with defaults', () => {
@@ -322,7 +322,7 @@ describe('plp-params', () => {
       const apiQuery = toApiQuery(query);
       expect(apiQuery).toEqual({
         page: 1,
-        limit: 12,
+        limit: 18,
         sort: 'recommended',
       });
     });
