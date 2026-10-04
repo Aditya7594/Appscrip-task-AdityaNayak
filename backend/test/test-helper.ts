@@ -7,35 +7,13 @@ import { AppModule } from '../src/app.module.js';
 import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter.js';
 import { PrismaService } from '../src/prisma/prisma.service.js';
 
-export interface FixtureData {
-  categories: {
-    id: number;
-    slug: string;
-    name: string;
-  }[];
-  products: {
-    id: number;
-    slug: string;
-    title: string;
-    description: string;
-    price: Prisma.Decimal;
-    rating: number;
-    ratingCount: number;
-    categoryId: number;
-    createdAt: Date;
-    updatedAt: Date;
-    category: { id: number; slug: string; name: string };
-    images: { id: number; productId: number; url: string; alt: string; position: number }[];
-  }[];
-}
-
-export const FIXTURE_CATEGORIES = [
+const FIXTURE_CATEGORIES = [
   { id: 1, slug: 'electronics', name: 'Electronics' },
   { id: 2, slug: 'mens-clothing', name: "Men's Clothing" },
   { id: 3, slug: 'jewelery', name: 'Jewelery' },
 ];
 
-export const FIXTURE_PRODUCTS = [
+const FIXTURE_PRODUCTS = [
   // 5 Electronics
   {
     id: 1,

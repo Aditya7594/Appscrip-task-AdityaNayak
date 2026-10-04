@@ -18,7 +18,7 @@ import {
 } from 'class-validator';
 import { ProductSortOrder } from '../products.sort.js';
 
-export function IsLessThanOrEqual(
+function IsLessThanOrEqual(
   property: string,
   validationOptions?: ValidationOptions,
 ) {
