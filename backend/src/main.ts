@@ -13,13 +13,34 @@ async function bootstrap(): Promise<void> {
   const configService = app.get(ConfigService);
 
   const corsOriginsRaw = configService.get<string>('CORS_ORIGINS', 'http://localhost:3000');
-  const corsOrigins = corsOriginsRaw
+  const corsOriginsList = corsOriginsRaw
     .split(',')
     .map((origin) => origin.trim())
     .filter((origin) => origin.length > 0);
 
   app.enableCors({
-    origin: corsOrigins,
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      // Allow requests with no origin (like curl, server-to-server, and Next.js SSR)
+      if (!origin) {
+        return callback(null, true);
+      }
+      const isAllowed = corsOriginsList.some((allowed) => {
+        if (allowed === '*') return true;
+        if (allowed.includes('*')) {
+          const regex = new RegExp('^' + allowed.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$');
+          return regex.test(origin);
+        }
+        return allowed === origin;
+      });
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS origin not allowed: ${origin}`), false);
+      }
+    },
     credentials: true,
   });
 
@@ -43,8 +64,8 @@ async function bootstrap(): Promise<void> {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
-  const port = configService.get<number>('PORT', 4000);
-  await app.listen(port);
+  const port = Number(process.env.PORT) || configService.get<number>('PORT', 4000);
+  await app.listen(port, '0.0.0.0');
 }
 
 await bootstrap();

@@ -25,46 +25,67 @@ export async function apiFetch<T>(
     }
   }
 
-  const fetchOptions: RequestInit = {
-    signal: AbortSignal.timeout(15000),
-  };
+  const maxAttempts = 2;
+  const timeoutMs = 35000; // Tolerates Render free-tier cold starts
 
-  if (options.cache) {
-    fetchOptions.cache = options.cache;
-  }
-
-  if (options.revalidate !== undefined) {
-    fetchOptions.next = {
-      revalidate: options.revalidate,
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const fetchOptions: RequestInit = {
+      signal: AbortSignal.timeout(timeoutMs),
     };
-  }
 
-  let response: Response;
-  try {
-    response = await fetch(url.toString(), fetchOptions);
-  } catch (err) {
-    if (err instanceof ApiError) {
-      throw err;
+    if (options.cache) {
+      fetchOptions.cache = options.cache;
     }
-    throw new ApiError(503, 'API unreachable');
-  }
 
-  if (!response.ok) {
-    let errorMessage = response.statusText || 'API Error';
-    let errorBody: ApiErrorBody | undefined;
+    if (options.revalidate !== undefined) {
+      fetchOptions.next = {
+        revalidate: options.revalidate,
+      };
+    }
 
+    let response: Response;
     try {
-      const data = (await response.json()) as ApiErrorBody;
-      errorBody = data;
-      if (data && data.message) {
-        errorMessage = Array.isArray(data.message) ? data.message.join(', ') : data.message;
+      response = await fetch(url.toString(), fetchOptions);
+    } catch (err) {
+      if (attempt < maxAttempts) {
+        // Backoff and retry once if API is cold-starting
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        continue;
       }
-    } catch {
-      // Body is not JSON
+      if (err instanceof ApiError) {
+        throw err;
+      }
+      throw new ApiError(503, 'API unreachable or warming up');
     }
 
-    throw new ApiError(response.status, errorMessage, errorBody);
+    if (!response.ok) {
+      // If server returned 502/503/504 while gateway or app is spinning up, retry once
+      if (
+        attempt < maxAttempts &&
+        (response.status === 502 || response.status === 503 || response.status === 504)
+      ) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        continue;
+      }
+
+      let errorMessage = response.statusText || 'API Error';
+      let errorBody: ApiErrorBody | undefined;
+
+      try {
+        const data = (await response.json()) as ApiErrorBody;
+        errorBody = data;
+        if (data && data.message) {
+          errorMessage = Array.isArray(data.message) ? data.message.join(', ') : data.message;
+        }
+      } catch {
+        // Body is not JSON
+      }
+
+      throw new ApiError(response.status, errorMessage, errorBody);
+    }
+
+    return (await response.json()) as T;
   }
 
-  return (await response.json()) as T;
+  throw new ApiError(503, 'API unreachable');
 }
