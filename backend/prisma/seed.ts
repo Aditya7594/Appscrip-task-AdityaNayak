@@ -111,15 +111,19 @@ async function main(): Promise<void> {
     const baseDaysAgo = i * 2; // Staggered creation date
     const baseCreatedAt = new Date(now - baseDaysAgo * 86400000);
 
+    const rawPrice = Number(raw.price) || 0;
+    const rawRate = Number(raw.rating?.rate) || 0;
+    const rawCount = Math.round(Number(raw.rating?.count)) || 0;
+
     // Items list for product: base + 2 variants
     const itemsToUpsert = [
       {
         slug: baseSlug,
         title: raw.title,
         description: raw.description,
-        price: Number(raw.price.toFixed(2)),
-        rating: Math.min(5, Math.max(0, Math.round(raw.rating.rate * 10) / 10)),
-        ratingCount: raw.rating.count,
+        price: Number(rawPrice.toFixed(2)),
+        rating: Math.min(5, Math.max(0, Math.round(rawRate * 10) / 10)),
+        ratingCount: rawCount,
         createdAt: baseCreatedAt,
         isVariant: false,
       },
@@ -127,9 +131,9 @@ async function main(): Promise<void> {
         slug: `${baseSlug}-midnight`,
         title: `${raw.title} - Midnight`,
         description: `${raw.description} Limited edition Midnight colorway with signature styling.`,
-        price: Math.max(1, Math.round(raw.price * (0.85 + rand() * 0.3) * 100) / 100),
-        rating: Math.min(5, Math.max(0, Math.round((raw.rating.rate + (rand() - 0.5) * 0.8) * 10) / 10)),
-        ratingCount: Math.max(5, Math.round(raw.rating.count * (0.6 + rand() * 0.8))),
+        price: Math.max(1, Math.round(rawPrice * (0.85 + rand() * 0.3) * 100) / 100),
+        rating: Math.min(5, Math.max(0, Math.round((rawRate + (rand() - 0.5) * 0.8) * 10) / 10)),
+        ratingCount: Math.max(5, Math.round(rawCount * (0.6 + rand() * 0.8))),
         createdAt: new Date(now - (baseDaysAgo + Math.floor(rand() * 5) + 1) * 86400000),
         isVariant: true,
       },
@@ -137,9 +141,9 @@ async function main(): Promise<void> {
         slug: `${baseSlug}-sand`,
         title: `${raw.title} - Sand`,
         description: `${raw.description} Crafted in an understated Sand palette designed for everyday wear.`,
-        price: Math.max(1, Math.round(raw.price * (0.85 + rand() * 0.3) * 100) / 100),
-        rating: Math.min(5, Math.max(0, Math.round((raw.rating.rate + (rand() - 0.5) * 0.8) * 10) / 10)),
-        ratingCount: Math.max(5, Math.round(raw.rating.count * (0.6 + rand() * 0.8))),
+        price: Math.max(1, Math.round(rawPrice * (0.85 + rand() * 0.3) * 100) / 100),
+        rating: Math.min(5, Math.max(0, Math.round((rawRate + (rand() - 0.5) * 0.8) * 10) / 10)),
+        ratingCount: Math.max(5, Math.round(rawCount * (0.6 + rand() * 0.8))),
         createdAt: new Date(now - (baseDaysAgo + Math.floor(rand() * 5) + 2) * 86400000),
         isVariant: true,
       },
