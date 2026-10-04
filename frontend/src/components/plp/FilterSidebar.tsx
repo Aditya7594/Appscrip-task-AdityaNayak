@@ -149,6 +149,16 @@ export function FilterSidebar({ categories, id = 'filters' }: FilterSidebarProps
     [selectedCategorySlugs, navigate],
   );
 
+  const resetCategories = useCallback(() => {
+    navigate({ category: undefined, page: 1 });
+  }, [navigate]);
+
+  const selectedCategoryLabels = useMemo(() => {
+    return categories
+      .filter((c) => selectedCategorySlugs.includes(c.slug))
+      .map((c) => c.name);
+  }, [categories, selectedCategorySlugs]);
+
   // Facet selection handlers
   const toggleFacet = useCallback(
     (groupKey: string, optionValue: string, categorySlug?: string) => {
@@ -277,6 +287,32 @@ export function FilterSidebar({ categories, id = 'filters' }: FilterSidebarProps
       </div>
 
       <hr className={styles.divider} />
+
+      {/* Category Facet Group */}
+      {categories.length > 0 && (
+        <>
+          <FilterGroup
+            title="CATEGORY"
+            selectedLabels={selectedCategoryLabels}
+            defaultOpen={true}
+            onReset={resetCategories}
+          >
+            {categories.map((cat) => (
+              <Checkbox
+                key={cat.slug}
+                id={`${prefix}-cat-${cat.slug}`}
+                name="category[]"
+                value={cat.slug}
+                checked={selectedCategorySlugs.includes(cat.slug)}
+                onChange={() => toggleCategorySlug(cat.slug)}
+                label={cat.name}
+                count={cat.productCount}
+              />
+            ))}
+          </FilterGroup>
+          <hr className={styles.divider} />
+        </>
+      )}
 
       {/* Figma Facet Groups */}
       {FIGMA_FACET_GROUPS.map((group) => {

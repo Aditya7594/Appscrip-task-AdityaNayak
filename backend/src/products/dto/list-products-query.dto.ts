@@ -64,8 +64,8 @@ export class ListProductsQueryDto {
   page: number = 1;
 
   @ApiPropertyOptional({
-    example: 12,
-    default: 12,
+    example: 18,
+    default: 18,
     description: 'Items per page (1 to 48)',
   })
   @IsOptional()
@@ -73,7 +73,7 @@ export class ListProductsQueryDto {
   @IsInt({ message: 'limit must be an integer' })
   @Min(1, { message: 'limit must not be less than 1' })
   @Max(48, { message: 'limit must not be greater than 48' })
-  limit: number = 12;
+  limit: number = 18;
 
   @ApiPropertyOptional({
     example: 'mens-clothing,jewelery',

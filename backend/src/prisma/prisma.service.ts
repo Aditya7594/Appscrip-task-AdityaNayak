@@ -18,15 +18,7 @@ interface FakeStoreProduct {
   };
 }
 
-function createMulberry32(seed: number): () => number {
-  let s = seed;
-  return function (): number {
-    s += 0x6d2b79f5;
-    let t = Math.imul(s ^ (s >>> 15), 1 | s);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+
 
 function toTitleCase(str: string): string {
   return str
@@ -90,7 +82,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
       categories.push(...Array.from(categoryMap.values()));
 
-      const rand = createMulberry32(123456789);
       const now = Date.now();
       let prodId = 1;
       const usedSlugs = new Set<string>();
