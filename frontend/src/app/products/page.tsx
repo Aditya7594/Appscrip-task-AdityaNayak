@@ -58,6 +58,14 @@ export async function generateMetadata({
     getCategories(),
   ]);
 
+  // If page exceeds totalPages and total > 0, redirect to the last valid page
+  if (
+    paginatedProducts.meta.total > 0 &&
+    query.page > paginatedProducts.meta.totalPages
+  ) {
+    redirect(buildPlpHref(query, { page: paginatedProducts.meta.totalPages }));
+  }
+
   const selectedCategoryNames = (query.category || [])
     .map((slug) => categories.find((c) => c.slug === slug)?.name)
     .filter((name): name is string => Boolean(name));

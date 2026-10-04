@@ -11,3 +11,5 @@
 | tsx | backend | TypeScript execution runtime for running image download and seed scripts directly |
 | server-only | frontend | Ensures server-only data fetching code and API client modules cannot be bundled into client components |
 | vitest | frontend | Fast unit test runner for validating pure URL parsing, query transformation, and state helpers |
+| @playwright/test | frontend | Official browser automation and end-to-end testing framework for verifying SSR, responsive layouts, and interactive filtering/sorting |
+

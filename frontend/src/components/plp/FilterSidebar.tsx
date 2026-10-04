@@ -15,10 +15,13 @@ import styles from './FilterSidebar.module.css';
 
 export interface FilterSidebarProps {
   categories: Category[];
+  id?: string;
 }
 
-export function FilterSidebar({ categories }: FilterSidebarProps) {
+export function FilterSidebar({ categories, id = 'filters' }: FilterSidebarProps) {
   const { query, navigate } = usePlpNavigation();
+  const isDesktop = id === 'filters';
+  const prefix = isDesktop ? 'filter' : `${id}-filter`;
 
   // Category selection & labels
   const selectedCategorySlugs = useMemo(() => {
@@ -97,8 +100,8 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
   }, [navigate]);
 
   return (
-    <aside id="filters" className={styles.filters} aria-labelledby="filters-title">
-      <h2 id="filters-title" className="visually-hidden">
+    <aside id={id} className={styles.filters} aria-labelledby={`${id}-title`}>
+      <h2 id={`${id}-title`} className="visually-hidden">
         Filters
       </h2>
 
@@ -112,7 +115,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
         {categories.map((cat) => (
           <Checkbox
             key={cat.id}
-            id={`filter-cat-${cat.slug}`}
+            id={`${prefix}-cat-${cat.slug}`}
             name="category"
             value={cat.slug}
             checked={selectedCategorySlugs.includes(cat.slug)}
@@ -135,7 +138,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
         {PRICE_RANGES.map((range) => (
           <Checkbox
             key={range.id}
-            id={`filter-price-${range.id}`}
+            id={`${prefix}-price-${range.id}`}
             name="price-range"
             value={range.id}
             checked={matchedPriceRange?.id === range.id}
@@ -157,7 +160,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
         {RATING_OPTIONS.map((opt) => (
           <Checkbox
             key={opt.id}
-            id={`filter-rating-${opt.id}`}
+            id={`${prefix}-rating-${opt.id}`}
             name="rating"
             value={String(opt.minRating)}
             checked={query.minRating === opt.minRating}

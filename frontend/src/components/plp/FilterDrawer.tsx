@@ -119,7 +119,7 @@ export function FilterDrawer({
       </div>
 
       <div className={styles.content}>
-        <FilterSidebar categories={categories} />
+        <FilterSidebar id="mobile-filters" categories={categories} />
       </div>
 
       <div className={styles.bottomBar}>
