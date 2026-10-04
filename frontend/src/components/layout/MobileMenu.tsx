@@ -18,7 +18,7 @@ export function MobileMenu() {
   const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   const isLinkActive = useCallback((href: string): boolean => {
-    if (!pathname) return false;
+    if (!pathname || href === '#') return false;
     if (href === '/products') {
       return pathname === '/products' || pathname.startsWith('/products/') || pathname === '/shop' || pathname === '/';
     }
@@ -113,12 +113,18 @@ export function MobileMenu() {
             {NAV_LINKS.map((link) => {
               const active = isLinkActive(link.href);
               return (
-                <li key={link.href} className={styles.navItem}>
+                <li key={link.label} className={styles.navItem}>
                   <Link
                     href={link.href}
                     className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
                     aria-current={active ? 'page' : undefined}
-                    onClick={closeMenu}
+                    onClick={(e) => {
+                      if (link.href === '#') {
+                        e.preventDefault();
+                      } else {
+                        closeMenu();
+                      }
+                    }}
                   >
                     {link.label}
                   </Link>

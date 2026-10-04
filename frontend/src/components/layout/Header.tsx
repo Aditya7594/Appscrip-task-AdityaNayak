@@ -56,18 +56,26 @@ export function Header() {
               <SearchIcon className={styles.toolIcon} size={24} />
             </button>
 
-            <Link href="/wishlist" className={styles.toolItem} aria-label="Wishlist">
+            <Link
+              href="#"
+              className={styles.toolItem}
+              aria-label="Wishlist (In development)"
+            >
               <HeartIcon className={styles.toolIcon} size={24} />
             </Link>
 
-            <Link href="/cart" className={styles.toolItem} aria-label="Shopping bag">
+            <Link
+              href="#"
+              className={styles.toolItem}
+              aria-label="Shopping bag (In development)"
+            >
               <BagIcon className={styles.toolIcon} size={24} />
             </Link>
 
             <Link
-              href="/profile"
+              href="#"
               className={`${styles.toolItem} ${styles.toolItemProfile}`}
-              aria-label="Profile"
+              aria-label="Profile (In development)"
             >
               <ProfileIcon className={styles.toolIcon} size={24} />
             </Link>

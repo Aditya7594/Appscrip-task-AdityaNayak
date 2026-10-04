@@ -6,22 +6,22 @@ import { FooterSection } from './FooterSection';
 import { InstagramIcon, LinkedInIcon } from '@/components/ui/icons';
 
 const METTA_LINKS = [
-  { href: '/about', label: 'About Us' },
-  { href: '/stories', label: 'Stories' },
-  { href: '/artisans', label: 'Artisans' },
-  { href: '/boutiques', label: 'Boutiques' },
-  { href: '/contact', label: 'Contact Us' },
-  { href: '/eu-compliances', label: 'EU Compliances Docs' },
+  { href: '#', label: 'About Us' },
+  { href: '#', label: 'Stories' },
+  { href: '#', label: 'Artisans' },
+  { href: '#', label: 'Boutiques' },
+  { href: '#', label: 'Contact Us' },
+  { href: '#', label: 'EU Compliances Docs' },
 ];
 
 const QUICK_LINKS = [
-  { href: '/orders', label: 'Orders & Shipping' },
-  { href: '/sellers', label: 'Join/Login as a Seller' },
-  { href: '/pricing', label: 'Payment & Pricing' },
-  { href: '/returns', label: 'Return & Refunds' },
-  { href: '/faqs', label: 'FAQs' },
-  { href: '/privacy', label: 'Privacy Policy' },
-  { href: '/terms', label: 'Terms & Conditions' },
+  { href: '#', label: 'Orders & Shipping' },
+  { href: '#', label: 'Join/Login as a Seller' },
+  { href: '#', label: 'Payment & Pricing' },
+  { href: '#', label: 'Return & Refunds' },
+  { href: '#', label: 'FAQs' },
+  { href: '#', label: 'Privacy Policy' },
+  { href: '#', label: 'Terms & Conditions' },
 ];
 
 const PAYMENT_BADGES = [
@@ -151,7 +151,7 @@ export function Footer() {
               <nav aria-label="Company">
                 <ul className={styles.footerLinks}>
                   {METTA_LINKS.map((link) => (
-                    <li key={link.href}>
+                    <li key={link.label}>
                       <Link href={link.href} className={styles.footerLink}>
                         {link.label}
                       </Link>
@@ -169,7 +169,7 @@ export function Footer() {
               <nav aria-label="Customer service">
                 <ul className={styles.footerLinks}>
                   {QUICK_LINKS.map((link) => (
-                    <li key={link.href}>
+                    <li key={link.label}>
                       <Link href={link.href} className={styles.footerLink}>
                         {link.label}
                       </Link>

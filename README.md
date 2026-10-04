@@ -2,10 +2,10 @@
 
 An end-to-end, production-grade e-commerce Product Listing Page (PLP) built with Next.js 16 (App Router, Server-Side Rendering), NestJS 12, Prisma ORM, and PostgreSQL. The application faithfully implements the Figma design specification with pixel-level precision, pure CSS Modules (zero UI kit dependencies), server-rendered SEO metadata, Schema.org JSON-LD structured data, WCAG 2.1 AA accessibility compliance, and full responsiveness across mobile (375px), tablet (768px), and desktop (1440px) breakpoints.
 
-<!-- Screenshot Placeholders -->
+<!-- Live Viewport Previews -->
 | Desktop Viewport (1440px) | Mobile Viewport (375px) |
 | :---: | :---: |
-| ![Desktop PLP Screenshot](docs/screenshots/desktop-plp.png)<br>*(Placeholder: TODO(me) — Add desktop screenshot)* | ![Mobile PLP Screenshot](docs/screenshots/mobile-plp.png)<br>*(Placeholder: TODO(me) — Add mobile screenshot)* |
+| ![Desktop PLP Screenshot](docs/screenshots/desktop-plp.png)<br>*Desktop PLP (1440px layout, filters, grid)* | ![Mobile PLP Screenshot](docs/screenshots/mobile-plp.png)<br>*Mobile PLP (375px responsive layout)* |
 
 ### Technical Reports & Audits
 - [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) — WCAG 2.1 AA compliance audit, keyboard navigation, and focus trapping reports.
@@ -18,9 +18,9 @@ An end-to-end, production-grade e-commerce Product Listing Page (PLP) built with
 ## 1. Live URLs
 
 - **GitHub Repository**: `Appscrip-task-AdityaNayak` ([https://github.com/Aditya7594/Appscrip-task-AdityaNayak](https://github.com/Aditya7594/Appscrip-task-AdityaNayak))
-- **Live Frontend (Netlify)**: [https://appscrip-task-adityanayak.netlify.app](https://appscrip-task-adityanayak.netlify.app) [TODO(me)]
-- **Live REST API Base (Render)**: [https://appscrip-task-adityanayak.onrender.com](https://appscrip-task-adityanayak.onrender.com) [TODO(me)]
-- **Live Swagger API Docs**: [https://appscrip-task-adityanayak.onrender.com/docs](https://appscrip-task-adityanayak.onrender.com/docs) [TODO(me)]
+- **Live Frontend (Netlify)**: [https://appscrip-task-adityanayak.netlify.app/products](https://appscrip-task-adityanayak.netlify.app/products) (Root redirect: [https://appscrip-task-adityanayak.netlify.app](https://appscrip-task-adityanayak.netlify.app))
+- **Live REST API Base (Render)**: [https://appscrip-task-adityanayak.onrender.com](https://appscrip-task-adityanayak.onrender.com) (Endpoints: [`/products`](https://appscrip-task-adityanayak.onrender.com/products), [`/categories`](https://appscrip-task-adityanayak.onrender.com/categories))
+- **Live Swagger API Docs**: [https://appscrip-task-adityanayak.onrender.com/docs](https://appscrip-task-adityanayak.onrender.com/docs)
 
 ---
 
@@ -444,3 +444,7 @@ Real corrections where AI output was rejected or corrected (from [docs/AI_LOG.md
    - The design uses proprietary fonts (*Simplon Norm* and *Adobe Caslon Pro*). We used high-fidelity open-source Google Font equivalents (*Barlow* and *Libre Caslon Text*) behind CSS variable wrappers. Production licensing would permit hosting the exact proprietary OTF/WOFF2 font files.
 6. **Lighthouse Performance Metrics**:
    - The frontend achieves **100/100** on Desktop and **96/100** on Mobile. Under extreme simulated 4G mobile throttling on free cloud hosting, cold hits may experience slight network latency variance before the CDN cache warms.
+7. **Secondary Navigation & Decorative Placeholders**:
+   - Secondary header links (`SKILLS`, `STORIES`, `ABOUT`, `CONTACT US`), utility tool buttons (`Wishlist`, `Bag`, `Profile`), and footer policy links are pointed to `#` (with click-interception) as decorative placeholders matching Figma visual fidelity. The assignment specifically scopes the Product Listing Page (PLP) and its active shop navigation, so non-PLP marketing pages are intentionally decorative to avoid 404s.
+8. **Mock Catalog Category Mapping**:
+   - To upgrade the catalog to 60 clean, high-resolution lifestyle images from DummyJSON while strictly preserving the 4 canonical FakeStore API categories (`electronics`, `jewelery`, `men's clothing`, `women's clothing`) required by the assignment specification, items were grouped under their nearest canonical category (e.g., luxury perfumes and watches under `jewelery`, sunglasses under `men's clothing`, handbags under `women's clothing`). In a dedicated e-commerce catalog, dedicated subcategory hierarchies (`fragrances`, `eyewear`, `leather-goods`) would be created.

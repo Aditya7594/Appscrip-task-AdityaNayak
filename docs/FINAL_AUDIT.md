@@ -166,7 +166,7 @@
 #### 3. Seed Script Execution
 - **Requirement**: Include a seed script that populates the DB. App must read from own API and DB, never call FakeStore directly from frontend.
 - **Status**: **PASS**
-- **Proof**: Clean seed script [`backend/prisma/seed.ts`](../backend/prisma/seed.ts) populates 60 products across 4 categories (`electronics`, `jewelery`, `mens-clothing`, `womens-clothing`) with local studio photography assets stored in [`frontend/public/products/`](../frontend/public/products/). The frontend code contains zero references or calls to `fakestoreapi.com`.
+- **Proof**: Clean seed script [`backend/prisma/seed.ts`](../backend/prisma/seed.ts) populates 60 products across the 4 canonical categories (`electronics`, `jewelery`, `mens-clothing`, `womens-clothing`) with local studio photography assets stored in [`frontend/public/products/`](../frontend/public/products/). To adhere strictly to the 4 categories specified in the prompt while using clean, high-resolution lifestyle imagery from DummyJSON, fashion items (luxury perfumes/watches $\to$ jewelery, sunglasses $\to$ mens-clothing, handbags $\to$ womens-clothing) were mapped into these 4 canonical groups. The frontend code contains zero references or calls to `fakestoreapi.com`.
 
 ---
 
