@@ -8,12 +8,19 @@
 .topStrip {
   height: 24px;
   background-color: var(--color-black);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.topStripContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-inline: 16px;
   width: 100%;
+  height: 100%;
+  padding-inline: 16px;
   box-sizing: border-box;
+  margin-inline: auto;
 }
 
 .topStripItem {
@@ -50,6 +57,9 @@
 @media (min-width: 768px) {
   .topStrip {
     height: 32px;
+  }
+
+  .topStripContainer {
     justify-content: space-between;
     padding-inline: 32px;
   }
@@ -61,19 +71,27 @@
 }
 
 @media (min-width: 1200px) {
-  .topStrip {
-    padding-inline: calc((100% - 1440px) / 2 + 274px);
+  .topStripContainer {
+    max-width: var(--container-max-width);
+    padding-inline: 274px;
   }
 }
 
 /* Header Main */
 /* Mobile (<= 767px): 55px tall, hamburger left, brand mark beside it, logo centered, icons right */
 .headerMain {
-  position: relative;
   height: 55px;
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-hairline);
   width: 100%;
+  box-sizing: border-box;
+}
+
+.headerContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin-inline: auto;
   box-sizing: border-box;
 }
 
@@ -303,6 +321,10 @@
 }
 
 @media (min-width: 1200px) {
+  .headerContainer {
+    max-width: var(--container-max-width);
+  }
+
   .brandMark {
     left: 96px;
     top: 40px;
