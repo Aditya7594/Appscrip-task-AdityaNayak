@@ -5,9 +5,9 @@ import { SortKey } from '@/types/plp';
 import { usePlpNavigation } from '@/lib/url/use-plp-navigation';
 import { ChevronIcon, CheckIcon } from '@/components/ui/icons';
 import styles from './SortDropdown.module.css';
-import { SORT_OPTIONS, type SortOption } from './sort-options';
+import { SORT_OPTIONS } from './sort-options';
 
-export { SORT_OPTIONS, type SortOption };
+export { SORT_OPTIONS };
 
 export interface SortDropdownProps {
   currentSort?: SortKey;

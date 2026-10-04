@@ -3,9 +3,7 @@ import { cache } from 'react';
 import { apiFetch } from './client';
 import { PaginatedProducts } from '@/types/product';
 import { PlpQuery } from '@/types/plp';
-import { toApiQuery, PAGE_SIZE } from '@/lib/url/plp-params';
-
-export { PAGE_SIZE };
+import { toApiQuery } from '@/lib/url/plp-params';
 
 const getProductsInternal = cache(async (queryKey: string): Promise<PaginatedProducts> => {
   const query: PlpQuery = JSON.parse(queryKey);

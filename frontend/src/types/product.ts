@@ -1,10 +1,10 @@
-export interface ProductImage {
+interface ProductImage {
   url: string;
   alt: string;
   position: number;
 }
 
-export interface ProductCategory {
+interface ProductCategory {
   id: number;
   slug: string;
   name: string;
@@ -31,7 +31,7 @@ export interface Category {
   productCount: number;
 }
 
-export interface PaginatedMeta {
+interface PaginatedMeta {
   page: number;
   limit: number;
   total: number;

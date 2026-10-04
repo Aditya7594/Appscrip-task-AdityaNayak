@@ -2,7 +2,7 @@ import { PlpQuery, SortKey } from '@/types/plp';
 
 export const PAGE_SIZE = 18;
 
-export const SORT_KEYS: SortKey[] = [
+const SORT_KEYS: SortKey[] = [
   'recommended',
   'newest',
   'popular',
