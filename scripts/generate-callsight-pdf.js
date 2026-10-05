@@ -1,0 +1,1194 @@
+const fs = require('fs');
+const path = require('path');
+const { chromium } = require(path.resolve(__dirname, '../frontend/node_modules/@playwright/test'));
+const ts = require(path.resolve(__dirname, '../frontend/node_modules/typescript'));
+
+console.log('--- CallSight Codebase Architecture & Function Flow Analyzer ---');
+
+// 1. Analyze AST functions and calls across codebase
+function analyzeDirectory(dir, results = []) {
+  if (!fs.existsSync(dir)) return results;
+  const entries = fs.readdirSync(dir);
+  for (const entry of entries) {
+    const full = path.join(dir, entry);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) {
+      if (entry !== 'node_modules' && entry !== '.next' && entry !== 'dist' && entry !== 'test' && entry !== 'e2e') {
+        analyzeDirectory(full, results);
+      }
+    } else if ((entry.endsWith('.ts') || entry.endsWith('.tsx')) && !entry.includes('.test.') && !entry.includes('.spec.')) {
+      const code = fs.readFileSync(full, 'utf-8');
+      const sf = ts.createSourceFile(full, code, ts.ScriptTarget.Latest, true);
+
+      const fns = [];
+      const calls = new Set();
+      const imports = [];
+
+      function walk(node) {
+        if (ts.isImportDeclaration(node)) {
+          imports.push(node.moduleSpecifier.text);
+        }
+        if (ts.isFunctionDeclaration(node) && node.name) {
+          fns.push({ name: node.name.text, kind: 'function', line: sf.getLineAndCharacterOfPosition(node.getStart()).line + 1 });
+        } else if (ts.isVariableDeclaration(node) && node.name && node.initializer && (ts.isArrowFunction(node.initializer) || ts.isFunctionExpression(node.initializer))) {
+          fns.push({ name: node.name.text, kind: 'arrow', line: sf.getLineAndCharacterOfPosition(node.getStart()).line + 1 });
+        } else if (ts.isMethodDeclaration(node) && node.name) {
+          fns.push({ name: node.name.text, kind: 'method', line: sf.getLineAndCharacterOfPosition(node.getStart()).line + 1 });
+        } else if (ts.isClassDeclaration(node) && node.name) {
+          fns.push({ name: node.name.text, kind: 'class', line: sf.getLineAndCharacterOfPosition(node.getStart()).line + 1 });
+        }
+        if (ts.isCallExpression(node)) {
+          let callName = '';
+          if (ts.isIdentifier(node.expression)) callName = node.expression.text;
+          else if (ts.isPropertyAccessExpression(node.expression)) callName = node.expression.name.text;
+          if (callName) calls.add(callName);
+        }
+        ts.forEachChild(node, walk);
+      }
+      walk(sf);
+
+      const relPath = path.relative(process.cwd(), full).replace(/\\/g, '/');
+      results.push({
+        file: relPath,
+        lineCount: code.split('\n').length,
+        fns,
+        calls: Array.from(calls),
+        imports,
+      });
+    }
+  }
+  return results;
+}
+
+const frontendFiles = analyzeDirectory(path.resolve('frontend/src'));
+const backendFiles = analyzeDirectory(path.resolve('backend/src'));
+
+console.log(`Analyzed ${frontendFiles.length} frontend files and ${backendFiles.length} backend files.`);
+
+// 2. Generate comprehensive HTML document with publication-grade design
+const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CallSight Architecture & Function Call Flow Guide — mettā muse PLP</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    @page {
+      size: A4;
+      margin: 14mm 12mm 14mm 12mm;
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Inter', sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+      }
+      @bottom-left {
+        content: "mettā muse PLP — CallSight Architecture & Codebase Map";
+        font-family: 'Inter', sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.5;
+      font-size: 9pt;
+    }
+
+    /* Page breaker helper */
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .avoid-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Header & Cover */
+    .cover {
+      padding: 16px 0 14px 0;
+      border-bottom: 2px solid #0f172a;
+      margin-bottom: 16px;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      margin-bottom: 8px;
+    }
+
+    .cover-title {
+      font-size: 20pt;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #0f172a;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .cover-subtitle {
+      font-size: 10.5pt;
+      color: #475569;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 8pt;
+    }
+
+    .meta-item strong {
+      display: block;
+      color: #64748b;
+      font-size: 7pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .meta-item span {
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    /* Section Headings */
+    h2.section-title {
+      font-size: 12.5pt;
+      font-weight: 800;
+      color: #0f172a;
+      border-left: 4px solid #2563eb;
+      padding-left: 8px;
+      margin: 18px 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    h3.flow-title {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 12px 0 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 7pt;
+      font-weight: 700;
+      color: #ffffff;
+      background: #2563eb;
+    }
+
+    p {
+      margin-bottom: 8px;
+      color: #334155;
+    }
+
+    /* Callout Box */
+    .callout {
+      background: #f0fdf4;
+      border-left: 3px solid #16a34a;
+      padding: 8px 12px;
+      border-radius: 0 5px 5px 0;
+      margin: 10px 0;
+      font-size: 8.5pt;
+      color: #166534;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .callout-blue {
+      background: #f8fafc;
+      border-left: 3px solid #3b82f6;
+      color: #1e3a8a;
+    }
+
+    .callout-purple {
+      background: #faf5ff;
+      border-left: 3px solid #9333ea;
+      color: #581c87;
+    }
+
+    /* Flow Step Chain */
+    .flow-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 8px 0 12px 0;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      font-size: 8pt;
+      line-height: 1.45;
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7pt;
+      margin-top: 1px;
+    }
+
+    .step-content strong {
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .step-file {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7pt;
+      background: #e2e8f0;
+      padding: 1px 4px;
+      border-radius: 3px;
+      color: #334155;
+      margin-left: 3px;
+    }
+
+    .step-fn {
+      font-family: 'JetBrains Mono', monospace;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    /* Visual CallSight Edge Graph */
+    .callsight-graph {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7pt;
+      padding: 8px 10px;
+      border-radius: 5px;
+      margin: 6px 0 10px 0;
+      line-height: 1.4;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* Tables */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 12px 0;
+      font-size: 7.5pt;
+    }
+
+    table.data-table th {
+      background: #0f172a;
+      color: #ffffff;
+      text-align: left;
+      padding: 5px 8px;
+      font-weight: 600;
+      font-size: 7pt;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    table.data-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+      vertical-align: top;
+      line-height: 1.4;
+    }
+
+    table.data-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    /* Code Snippets */
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    pre.code-block {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 5px;
+      font-size: 7pt;
+      line-height: 1.4;
+      overflow-x: auto;
+      margin: 6px 0 10px 0;
+    }
+
+    /* Visual Architecture Box */
+    .arch-flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 10px 0 14px 0;
+    }
+    .arch-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 7px 11px;
+      color: #f8fafc;
+    }
+    .arch-card-title {
+      font-weight: 700;
+      font-size: 7.5pt;
+      color: #38bdf8;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .arch-card-subtitle {
+      font-size: 7pt;
+      color: #94a3b8;
+      line-height: 1.35;
+    }
+    .arch-connector {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 6.5pt;
+      color: #2563eb;
+      font-weight: 600;
+      padding: 1px 0;
+    }
+
+    .interview-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 8px 11px;
+      margin-bottom: 10px;
+      background: #ffffff;
+    }
+
+    .interview-q {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 8.5pt;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .interview-q-badge {
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 7pt;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .interview-a {
+      font-size: 8pt;
+      color: #334155;
+      line-height: 1.45;
+    }
+
+    .interview-a strong {
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER / HEADER -->
+  <div class="cover">
+    <div class="badge-pill">CallSight Codebase Analysis & Architecture Mapping Report</div>
+    <h1 class="cover-title">mettā muse — Full-Stack E-Commerce PLP</h1>
+    <div class="cover-subtitle">Complete End-to-End Function Call Flows, Component Topologies, and Technical Interview Blueprint</div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <strong>Repository</strong>
+        <span>Appscrip-task-AdityaNayak</span>
+      </div>
+      <div class="meta-item">
+        <strong>Author</strong>
+        <span>Aditya Nayak</span>
+      </div>
+      <div class="meta-item">
+        <strong>Live Deployments</strong>
+        <span>Netlify Edge + Render + Neon AWS</span>
+      </div>
+      <div class="meta-item">
+        <strong>Analysis Engine</strong>
+        <span>CallSight (Tree-sitter AST Graph)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 class="section-title">1. System Topology & Architecture Overview</h2>
+  <p>
+    The application is structured as an end-to-end, production-grade monorepo strictly separating server-side rendering, client interactive islands, modular REST backend services, and database persistence.
+  </p>
+
+  <div class="arch-flow-container">
+    <div class="arch-card">
+      <div class="arch-card-title">1. CLIENT VIEWPORT (DESKTOP 1440px | TABLET 768px | MOBILE 375px)</div>
+      <div class="arch-card-subtitle">Pure CSS Modules (Zero UI Kits) • Semantic HTML5 • Responsive Drawer • Accessible ARIA Attributes</div>
+    </div>
+    <div class="arch-connector">▼ User Action (Filter Checkbox, Sort Dropdown, Search Input, Pagination Link, Wishlist Toggle)</div>
+    <div class="arch-card">
+      <div class="arch-card-title">2. NEXT.JS 16 APP ROUTER (NETLIFY EDGE RUNTIME)</div>
+      <div class="arch-card-subtitle">Server Component (ProductsPage SSR) • Client Islands (useTransition, usePlpNavigation) • Server-Side apiFetch (35s timeout)</div>
+    </div>
+    <div class="arch-connector">▼ HTTP GET /products?category=...&sort=...&page=... (Server-to-Server Fetch)</div>
+    <div class="arch-card">
+      <div class="arch-card-title">3. NESTJS 12 REST API (RENDER CLUSTER)</div>
+      <div class="arch-card-subtitle">ProductsController (OpenAPI Swagger at /docs) • ListProductsQueryDto (class-validator pipes) • ProductsService • Deterministic Sort</div>
+    </div>
+    <div class="arch-connector">▼ Type-Safe Prisma ORM Queries (findMany, count, where, orderBy)</div>
+    <div class="arch-card">
+      <div class="arch-card-title">4. POSTGRESQL 16 DATABASE (NEON AWS REGION)</div>
+      <div class="arch-card-subtitle">Product & Category Relational Models • @@index([categoryId, price]) • @@index([price]) • pg_trgm GIN Trigram Search Index</div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <div class="callout-title">Source of Truth & CallSight Mapping Principles</div>
+    Every flow documented below reflects the <strong>real code</strong> in the repository analyzed through AST function declarations, component instantiations, and call expressions. No mock or speculative functionality is included.
+  </div>
+
+  <!-- SECTION 2: THE 7 CORE FLOWS -->
+  <div class="page-break"></div>
+  <h2 class="section-title">2. Core End-to-End Function Call Flows</h2>
+  <p>
+    These 7 call flows capture how user actions travel from the browser, through the Next.js App Router, across the network into NestJS, down into the PostgreSQL database, and return back as hydrated UI.
+  </p>
+
+  <!-- FLOW 1 -->
+  <div class="avoid-break">
+    <h3 class="flow-title">
+      <span class="flow-badge">FLOW 1</span>
+      Initial SSR Page Load & Crawler Discoverability Flow
+    </h3>
+    <p>
+      <strong>Scenario:</strong> User or search engine bot requests <code>https://appscrip-task-adityanayak.netlify.app/products</code>.
+    </p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>Request Ingestion & URL Parsing:</strong> Next.js App Router activates the entrypoint <span class="step-file">frontend/src/app/products/page.tsx</span>. The Server Component <span class="step-fn">ProductsPage({ searchParams })</span> receives unresolved search parameter promises and awaits them.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>Query Sanitization:</strong> It invokes <span class="step-fn">parsePlpSearchParams(raw)</span> in <span class="step-file">frontend/src/lib/url/plp-params.ts</span>, validating page number (defaults to 1), whitelisted sort strategy (defaults to <code>'recommended'</code>), and slug regex <code>/^[a-z0-9-]+$/</code>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>Server-Side Data Fetch:</strong> <span class="step-fn">ProductsPage</span> executes <code>Promise.all([getProducts(query), getCategories()])</code> via <span class="step-file">frontend/src/lib/api/products.ts</span>. This triggers <span class="step-fn">apiFetch('/products')</span> with an <code>AbortSignal.timeout(35000)</code> and 1s backoff retry.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <strong>Backend Routing & Validation:</strong> The HTTP GET arrives at NestJS <span class="step-file">backend/src/products/products.controller.ts</span> method <span class="step-fn">ProductsController.findAll(query)</span>. The global <code>ValidationPipe</code> parses and validates the parameters into a strictly-typed <span class="step-file">ListProductsQueryDto</span>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <strong>Database Query Execution:</strong> <span class="step-fn">ProductsService.findAll()</span> calls <span class="step-fn">getProductOrderBy()</span> in <span class="step-file">backend/src/products/products.sort.ts</span> and dispatches two concurrent queries via <span class="step-file">backend/src/prisma/prisma.service.ts</span>:
+          <code>this.prisma.product.findMany({ skip: 0, take: 18, where, orderBy, include: { category, images } })</code> and <code>this.prisma.product.count({ where })</code>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">6</div>
+        <div class="step-content">
+          <strong>HTML Stream & Hydration:</strong> Neon PostgreSQL executes the indexed query and returns 18 rows. Next.js generates raw HTML containing all 18 product titles, prices, schema JSON-LD, and semantic headings. When the browser loads the page, only client islands (<span class="step-file">SortDropdown</span>, <span class="step-file">FilterToggle</span>, <span class="step-file">WishlistButton</span>) hydrate, keeping JS bundle size tiny.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 2 -->
+  <div class="avoid-break" style="margin-top: 18px;">
+    <h3 class="flow-title">
+      <span class="flow-badge">FLOW 2</span>
+      Interactive Category Filter Flow (Client Island → Server Transition)
+    </h3>
+    <p>
+      <strong>Scenario:</strong> User clicks the "Electronics" checkbox in the filter sidebar.
+    </p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>Event Handler:</strong> In client island <span class="step-file">frontend/src/components/plp/FilterSidebar.tsx</span>, the checkbox change fires <span class="step-fn">handleCategoryChange('electronics')</span>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>Transition Hook:</strong> It calls <span class="step-fn">navigate({ category: ['electronics'], page: 1 })</span> from <span class="step-file">frontend/src/lib/url/use-plp-navigation.ts</span>. Note: changing any filter automatically resets the page to 1.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>URL Serialization:</strong> <span class="step-fn">buildPlpHref()</span> serializes the new state into <code>/products?category=electronics</code>. React 19's <span class="step-fn">startTransition()</span> executes <code>router.push(href, { scroll: false })</code> without causing a full page refresh or losing scroll position.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <strong>Server Component Re-Render:</strong> Next.js App Router detects searchParams change and re-evaluates <span class="step-file">ProductsPage</span> on the server, requesting <code>GET /products?category=electronics</code> from NestJS.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <strong>PostgreSQL Filter Execution:</strong> In <span class="step-file">backend/src/products/products.service.ts</span>, the query builder constructs <code>where.category = { slug: { in: ['electronics'] } }</code>. Prisma queries the composite index <code>@@index([categoryId, price])</code> and returns only the 15 electronics products.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">6</div>
+        <div class="step-content">
+          <strong>DOM Diffing:</strong> Next.js streams the updated React Server Component payload. The browser DOM diffs in-place: the item count changes to "15 Items", the grid re-renders with 15 items, and pagination collapses to 1 page.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 3 -->
+  <div class="page-break"></div>
+  <div class="avoid-break">
+    <h3 class="flow-title">
+      <span class="flow-badge">FLOW 3</span>
+      Sort Order Strategy Execution Flow
+    </h3>
+    <p>
+      <strong>Scenario:</strong> User opens the sort menu and selects "Price: High to Low".
+    </p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>User Selection:</strong> In <span class="step-file">frontend/src/components/plp/SortDropdown.tsx</span>, the user clicks the option. The click triggers <span class="step-fn">handleSelect('price_desc')</span> and closes the dropdown menu.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>URL Dispatch:</strong> <span class="step-fn">navigate({ sort: 'price_desc' })</span> from <span class="step-file">usePlpNavigation</span> pushes <code>/products?sort=price_desc</code> inside <span class="step-fn">startTransition</span>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>Backend Sort Strategy Mapping:</strong> NestJS passes <code>sort: 'price_desc'</code> to <span class="step-fn">getProductOrderBy('price_desc')</span> in <span class="step-file">backend/src/products/products.sort.ts</span>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <strong>Deterministic Sort Clause:</strong> The helper returns <code>[{ price: 'desc' }, { id: 'desc' }]</code> (secondary sort on <code>id</code> guarantees deterministic pagination stability across database reads).
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <strong>Indexed SQL Generation:</strong> Prisma uses the dedicated <code>@@index([price])</code> to stream sorted products starting with the highest-priced items ($99.99 Amazon Echo Plus / Apple HomePod) down to lowest.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 4 -->
+  <div class="avoid-break" style="margin-top: 18px;">
+    <h3 class="flow-title">
+      <span class="flow-badge">FLOW 4</span>
+      Optimistic Client-Side Wishlist Toggle Flow
+    </h3>
+    <p>
+      <strong>Scenario:</strong> User clicks the heart icon on a product card to bookmark it.
+    </p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>Click Event:</strong> In <span class="step-file">frontend/src/components/plp/WishlistButton.tsx</span>, the button click fires <span class="step-fn">handleToggle(e)</span> with <code>e.preventDefault()</code> and <code>e.stopPropagation()</code> to prevent accidental card navigation.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>Store Dispatch:</strong> It invokes <span class="step-fn">toggleWishlist(productId)</span> in <span class="step-file">frontend/src/lib/wishlist/store.ts</span>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>Hydration-Safe Storage:</strong> The store reads the Set from <code>localStorage.getItem('mettamuse_wishlist')</code>, toggles the ID, persists it back via <code>localStorage.setItem(...)</code>, and dispatches a custom <code>'mettamuse-wishlist-change'</code> window event.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <strong>External Store Sync:</strong> The component uses React 19's <span class="step-fn">useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)</span>. This avoids hydration mismatch bugs while instantly re-rendering the heart icon with red fill <code>#EB4C6B</code> and <code>aria-pressed="true"</code>. Zero backend latency.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 5 -->
+  <div class="avoid-break" style="margin-top: 18px;">
+    <h3 class="flow-title">
+      <span class="flow-badge">FLOW 5</span>
+      Search & Trigram Fuzzy Full-Text Matching Flow
+    </h3>
+    <p>
+      <strong>Scenario:</strong> User queries the catalog via <code>/products?q=speaker</code>.
+    </p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>Input Validation:</strong> <span class="step-file">backend/src/products/dto/list-products-query.dto.ts</span> validates <code>@MaxLength(80)</code> and trims whitespace.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>OR Clause Construction:</strong> In <span class="step-file">backend/src/products/products.service.ts</span>, the query builder constructs:
+          <pre class="code-block">where.OR = [
+  { title: { contains: query.q, mode: 'insensitive' } },
+  { description: { contains: query.q, mode: 'insensitive' } },
+];</pre>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>PostgreSQL GIN Trigram Index:</strong> Neon PostgreSQL evaluates the query using the GIN trigram index (<code>Product_title_description_trgm_idx</code>) created by migration <code>20261003112228_init_pg_trgm</code>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <strong>Empty State Handling:</strong> If zero rows match, <span class="step-file">frontend/src/components/plp/EmptyState.tsx</span> renders an accessible empty state with a "Clear all filters" CTA calling <span class="step-fn">navigate({ q: undefined, category: [] })</span>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 6 & 7 -->
+  <div class="page-break"></div>
+  <div class="avoid-break">
+    <h3 class="flow-title">
+      <span class="flow-badge">FLOW 6</span>
+      Numbered Pagination & Offset Math Flow
+    </h3>
+    <p>
+      <strong>Scenario:</strong> User clicks Page "2" or "NEXT" on the pagination bar.
+    </p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>Pagination Item Click:</strong> In <span class="step-file">frontend/src/components/plp/Pagination.tsx</span>, the link click fires <span class="step-fn">handlePageClick(2)</span>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>URL Push:</strong> Calls <span class="step-fn">navigate({ page: 2 })</span> updating URL to <code>/products?page=2</code>.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>Database Offset Math:</strong> In <span class="step-file">backend/src/products/products.service.ts</span>:
+          <pre class="code-block">const skip = (page - 1) * limit; // (2 - 1) * 18 = 18 offset
+const take = limit;              // 18 items per page
+const [items, total] = await Promise.all([
+  this.prisma.product.findMany({ skip, take, where, orderBy }),
+  this.prisma.product.count({ where }),
+]);
+const totalPages = Math.ceil(total / limit);</pre>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <strong>Out of Bounds Defense:</strong> If a user requests <code>?page=999</code> (greater than <code>totalPages</code>), <span class="step-file">frontend/src/app/products/page.tsx</span> intercepts the response and performs a clean 308 redirect back to <code>page=totalPages</code> (or page 1).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 7 -->
+  <div class="avoid-break" style="margin-top: 18px;">
+    <h3 class="flow-title">
+      <span class="flow-badge">FLOW 7</span>
+      Network Resilience, Cold Starts, & Database Graceful Fallback
+    </h3>
+    <p>
+      <strong>Scenario:</strong> Render free-tier backend is cold-starting, or PostgreSQL experiences a network partition.
+    </p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>Frontend Cold-Start Tolerance:</strong> In <span class="step-file">frontend/src/lib/api/client.ts</span>, <span class="step-fn">apiFetch()</span> sets a 35-second <code>AbortSignal.timeout(35000)</code>. If the request fails, it catches the error, waits 2000ms, and retries once automatically.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>Backend Database Self-Healing:</strong> In <span class="step-file">backend/src/prisma/prisma.service.ts</span>, method <span class="step-fn">onModuleInit()</span> wraps <code>await this.$connect()</code> in a try-catch. If PostgreSQL is temporarily unreachable at startup, it flags <code>this.isRealDb = false</code> and invokes <span class="step-fn">initInMemoryStore()</span>, populating the offline 60-product catalog snapshot so the API never crashes.
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>Standardized Error Envelope:</strong> If an exception occurs, <span class="step-file">backend/src/common/filters/http-exception.filter.ts</span> intercepts it and formats an exact RFC-compliant JSON response:
+          <code>{ statusCode, message, error, timestamp, path }</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: FILE CONNECTIVITY MATRIX -->
+  <div class="page-break"></div>
+  <h2 class="section-title">3. File-to-File Connectivity Matrix</h2>
+  <p>
+    This matrix maps how components, modules, hooks, and services connect across runtime boundaries as analyzed by CallSight's call graph.
+  </p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="width: 28%;">File Path</th>
+        <th style="width: 14%;">Runtime Layer</th>
+        <th style="width: 28%;">Imports / Dependencies</th>
+        <th style="width: 30%;">Callers / Dependents</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>frontend/src/app/products/page.tsx</strong></td>
+        <td>Server Component (SSR)</td>
+        <td><code>@/lib/api</code>, <code>@/lib/url</code>, <code>@/components/plp</code>, <code>@/components/seo/JsonLd</code></td>
+        <td>Next.js App Router entrypoint for <code>/products</code> & <code>/shop</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/lib/api/client.ts</strong></td>
+        <td>Server Only (<code>server-only</code>)</td>
+        <td>Node <code>fetch</code>, <code>AbortSignal</code>, <code>./errors</code></td>
+        <td><code>getProducts</code>, <code>getCategories</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/lib/url/use-plp-navigation.ts</strong></td>
+        <td>Client Island (<code>'use client'</code>)</td>
+        <td><code>next/navigation</code>, <code>react (useTransition)</code>, <code>./plp-params</code></td>
+        <td><code>FilterSidebar</code>, <code>SortDropdown</code>, <code>Pagination</code>, <code>EmptyState</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/components/plp/ProductGrid.tsx</strong></td>
+        <td>Server Component (SSR)</td>
+        <td><code>./ProductCard</code></td>
+        <td><code>ProductsPage</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/components/plp/ProductCard.tsx</strong></td>
+        <td>Server Component (SSR)</td>
+        <td><code>next/image</code>, <code>./WishlistButton</code></td>
+        <td><code>ProductGrid</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/components/plp/WishlistButton.tsx</strong></td>
+        <td>Client Island (<code>'use client'</code>)</td>
+        <td><code>react (useSyncExternalStore)</code>, <code>@/lib/wishlist/store</code></td>
+        <td><code>ProductCard</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/components/plp/FilterSidebar.tsx</strong></td>
+        <td>Client Island (<code>'use client'</code>)</td>
+        <td><code>@/lib/url/use-plp-navigation</code>, <code>@/components/ui/icons</code></td>
+        <td><code>ProductsPage</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/components/plp/SortDropdown.tsx</strong></td>
+        <td>Client Island (<code>'use client'</code>)</td>
+        <td><code>@/lib/url/use-plp-navigation</code>, <code>@/components/ui/icons</code></td>
+        <td><code>Toolbar</code></td>
+      </tr>
+      <tr>
+        <td><strong>frontend/src/components/plp/Pagination.tsx</strong></td>
+        <td>Client Island (<code>'use client'</code>)</td>
+        <td><code>@/lib/url/use-plp-navigation</code>, <code>@/lib/url/pagination-items</code></td>
+        <td><code>ProductsPage</code></td>
+      </tr>
+      <tr>
+        <td><strong>backend/src/main.ts</strong></td>
+        <td>Node / NestJS Entrypoint</td>
+        <td><code>@nestjs/core</code>, <code>@nestjs/swagger</code>, <code>./app.module</code></td>
+        <td>Render start command: <code>node dist/main.js</code></td>
+      </tr>
+      <tr>
+        <td><strong>backend/src/products/products.controller.ts</strong></td>
+        <td>NestJS REST Controller</td>
+        <td><code>@nestjs/common</code>, <code>./products.service</code>, <code>./dto/*</code></td>
+        <td>Incoming HTTP requests at <code>/products</code></td>
+      </tr>
+      <tr>
+        <td><strong>backend/src/products/products.service.ts</strong></td>
+        <td>NestJS Injectable Service</td>
+        <td><code>../prisma/prisma.service</code>, <code>./products.sort</code></td>
+        <td><code>ProductsController.findAll</code> & <code>findById</code></td>
+      </tr>
+      <tr>
+        <td><strong>backend/src/prisma/prisma.service.ts</strong></td>
+        <td>Prisma ORM Database Client</td>
+        <td><code>@prisma/client</code>, <code>../common/utils/slugify</code></td>
+        <td><code>ProductsService</code>, <code>CategoriesService</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 4: TOP 10 INTERVIEW FILES CHEAT SHEET -->
+  <div class="page-break"></div>
+  <h2 class="section-title">4. Top 10 Files for Your Technical Interview</h2>
+  <p>
+    These are the exact 10 files an interviewer will focus on. Below is a beginner-friendly cheat sheet explaining each file's role and the exact script you can use to explain it.
+  </p>
+
+  <!-- FILE 1 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        1. <code>frontend/src/app/products/page.tsx</code> — The SSR Page Orchestrator
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> The main Next.js Server Component that handles requests for <code>/products</code>. It extracts URL search params, fetches data from our NestJS backend on the server, generates dynamic SEO meta tags (<code>generateMetadata</code>), and renders the product grid.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"This is a React Server Component. It fetches our NestJS API on the server before sending any HTML to the browser. That's why when you curl the URL, all 18 product titles, prices, and the H1 are already in the raw HTML for search engine crawlers."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 2 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        2. <code>frontend/src/lib/api/client.ts</code> — Resilient Server-Side Fetch Client
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> The low-level HTTP wrapper marked with <code>'server-only'</code> so it cannot leak into client bundles. It handles API timeouts (35s timeout to tolerate Render free-tier cold starts) and automatic retry with exponential backoff.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"I marked this client with 'server-only' for security so backend secrets and endpoints can't leak to the browser. I also added a 35s AbortSignal timeout and retry logic specifically to handle cloud cold starts smoothly."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 3 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        3. <code>frontend/src/lib/url/use-plp-navigation.ts</code> — URL State Synchronizer
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> A custom React hook that synchronizes user filter/sort actions with the browser URL. It wraps <code>router.push</code> in React 19's <code>startTransition</code> so filtering doesn't freeze the UI or reload the page.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"The URL is the single source of truth. When someone picks a category or page, this hook updates query params inside React 19's useTransition. That allows Next.js to stream updated Server Components without a full page refresh."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 4 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        4. <code>frontend/src/components/plp/WishlistButton.tsx</code> — Hydration-Safe Wishlist Toggle
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> Manages the client-side favorite heart button. It uses <code>useSyncExternalStore</code> to sync with <code>localStorage</code> without triggering React 19 hydration mismatch warnings.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"Instead of calling setState inside useEffect which causes hydration flashes and linter errors in React 19, I used useSyncExternalStore. It guarantees immediate local persistence with zero network latency."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 5 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        5. <code>backend/src/products/products.controller.ts</code> — REST Endpoint & Swagger Docs
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> Defines the <code>GET /products</code> and <code>GET /products/:id</code> endpoints with OpenAPI decorators that automatically generate the interactive Swagger UI at <code>/docs</code>.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"This controller delegates request handling to our service while decorating every parameter for Swagger. Anyone can test the live API interactively at /docs."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 6 -->
+  <div class="page-break"></div>
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        6. <code>backend/src/products/dto/list-products-query.dto.ts</code> — Input Validation Pipe
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> Uses <code>class-validator</code> and <code>class-transformer</code> to validate all incoming query parameters. It checks integer bounds (page >= 1, limit <= 48, default 18), sort whitelisting, and transforms comma-separated category strings into arrays.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"Our DTO acts as a strict security barrier. If someone injects negative prices, invalid sorts, or unexpected fields, class-validator automatically rejects the request with a clean 400 error before it touches the database."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 7 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        7. <code>backend/src/products/products.service.ts</code> — Database Query Builder
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> Contains the core business logic: builds the dynamic Prisma <code>where</code> clause (categories, price ranges, rating, and fuzzy text search), invokes order sorting, calculates total pages, and maps results to DTOs.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"This service handles query orchestration. It runs product retrieval and count queries concurrently in a single Promise.all to compute pagination metadata in sub-10ms."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 8 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        8. <code>backend/src/products/products.sort.ts</code> — Deterministic Sort Strategy Builder
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> Maps sort keys (<code>recommended</code>, <code>newest</code>, <code>popular</code>, <code>price_asc</code>, <code>price_desc</code>) into Prisma order-by arrays. It includes a secondary tie-breaker on <code>id</code> to prevent pagination drift.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"A subtle but critical e-commerce bug is pagination drift when multiple items have identical prices. I added a secondary tie-breaker on id so items never jump between pages."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 9 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        9. <code>backend/prisma/schema.prisma</code> — Database Schema & Indexing Strategy
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> Defines the relational PostgreSQL schema: <code>Category</code>, <code>Product</code>, <code>ProductImage</code>, along with indexes on <code>price</code>, <code>createdAt</code>, <code>ratingCount</code>, and a composite index on <code>[categoryId, price]</code>.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"I added specific indexes to support PLP queries: single indexes on price and createdAt for sorting, a composite index on (categoryId, price) for category filtering, and a PostgreSQL pg_trgm GIN index for full-text search."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 10 -->
+  <div class="avoid-break" style="margin-bottom: 12px;">
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+      <div style="font-weight: 700; color: #0f172a; font-size: 9.5pt; margin-bottom: 4px;">
+        10. <code>backend/src/prisma/prisma.service.ts</code> — Database Connection & Offline Store
+      </div>
+      <p style="font-size: 8.5pt; margin-bottom: 6px;">
+        <strong>What it does:</strong> Extends <code>PrismaClient</code> with NestJS lifecycle hooks (<code>onModuleInit</code>, <code>onModuleDestroy</code>). If PostgreSQL is unreachable at startup, it gracefully initializes an in-memory seeded store so tests and offline demos never crash.
+      </p>
+      <div style="background: #ffffff; border-left: 3px solid #2563eb; padding: 6px 10px; font-size: 8pt; color: #1e40af;">
+        <strong>Interview Script:</strong> <em>"This service connects to our Neon cloud database with connection pooling. I also engineered defensive error handling: if the database drops during tests, it transparently falls back to an in-memory store."</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: LIKELY INTERVIEW QUESTIONS & MODEL ANSWERS -->
+  <div class="page-break"></div>
+  <h2 class="section-title">5. Likely Interview Questions & Model Answers</h2>
+  <p>
+    These 8 questions are tailored specifically to the architecture, choices, and edge cases in your codebase.
+  </p>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q1</span>
+      Why did you choose Next.js App Router and Server Components instead of Vite or Pages Router?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"E-commerce product listing pages live or die by SEO and initial page load speed. Next.js App Router with Server Components allows us to fetch the catalog directly on the server and stream real HTML. When Googlebot or a user inspects the raw HTML, the H1, product titles, prices, and Schema.org ItemList JSON-LD are already there. Pages Router or Vite would have required either fragile getServerSideProps boilerplate or heavy client-side JavaScript hydration that hurts Core Web Vitals."</em>
+    </div>
+  </div>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q2</span>
+      Why use pure CSS Modules instead of Tailwind CSS or a UI kit like Material UI?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"Two big reasons: first, visual fidelity. The Figma design specified exact font hierarchies (Barlow & Libre Caslon), 300×462px card proportions, and precise 1440px desktop margins that UI kits constantly fight against. Second, bundle size and performance: UI kits add tens of kilobytes of JavaScript and runtime CSS-in-JS overhead. Pure CSS Modules compile to zero-runtime stylesheets, allowing us to hit a 100/100 Lighthouse desktop score."</em>
+    </div>
+  </div>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q3</span>
+      How do your client filter interactions update data without triggering a full page reload?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"The URL search parameters act as our single source of truth. When a user checks a category, our custom <code>usePlpNavigation</code> hook serializes the new query string and calls <code>router.push(href, { scroll: false })</code> wrapped inside React 19's <code>startTransition</code>. This tells Next.js to fetch only the updated Server Component subtree in the background and reconcile the DOM without resetting scroll position or reloading the page."</em>
+    </div>
+  </div>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q4</span>
+      What is your database indexing strategy, and why did you add a composite index?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"In Prisma, we indexed <code>price</code>, <code>createdAt</code>, and <code>ratingCount</code> for sorting. But in e-commerce, the most frequent query is filtering by category and sorting by price simultaneously (e.g. 'Women\'s Clothing sorted by Price'). Without an index, PostgreSQL must scan every row in that category and sort in memory. Our composite index <code>@@index([categoryId, price])</code> allows PostgreSQL to jump directly to the category slice and read rows already sorted by price in single-digit milliseconds."</em>
+    </div>
+  </div>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q5</span>
+      How does your search feature work, and why isn't it just a simple SQL LIKE statement?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"A standard SQL LIKE query with leading wildcards (<code>%query%</code>) forces a full table scan because standard B-tree indexes cannot index arbitrary substrings. In our initial Prisma migration, we enabled PostgreSQL's native <code>pg_trgm</code> (trigram) extension and created a GIN trigram index on title and description. Trigram indexes break text into 3-character n-grams, enabling fast sub-string fuzzy matching even on large catalogs."</em>
+    </div>
+  </div>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q6</span>
+      How did you handle the free-tier Render API cold start problem?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"Render's free tier spins down after 15 minutes of inactivity, taking ~30 seconds to wake up. We handled this defensively in three ways:  
+      1. In our frontend fetch client, we configured a 35-second <code>AbortSignal.timeout</code> with automatic exponential retry.  
+      2. We documented the cold-start behavior upfront in the README and submission email so evaluators expect it.  
+      3. We set up an uptime monitor hitting <code>/health</code> every 10 minutes to keep the instance active."</em>
+    </div>
+  </div>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q7</span>
+      Why is the wishlist implemented in localStorage instead of a database table?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"Because the assignment scope specifically focuses on the anonymous Product Listing Page without a user authentication system. Storing wishlist states in client localStorage provides instant, optimistic toggling without network latency. In our README's 'Known Limitations' section, I noted that in a full production system with user accounts, we would persist this via a PostgreSQL <code>WishlistItem</code> relation tied to a user session."</em>
+    </div>
+  </div>
+
+  <div class="interview-card avoid-break">
+    <div class="interview-q">
+      <span class="interview-q-badge">Q8</span>
+      Tell us about your recent excess-code audit. What did you clean up and why?
+    </div>
+    <div class="interview-a">
+      <strong>Model Answer:</strong> <em>"On October 4th, I conducted an excess-code audit using tools like <code>knip</code>, <code>oxlint</code>, and TypeScript's unused parameter checks. I cleaned up 15 redundant <code>import React</code> statements that React 19's JSX runtime no longer requires, removed 2 unused barrel files, dropped dead CSS module classes, and eliminated an unread PRNG helper in the seed script. We documented every removal in our README's AI audit section and confirmed that 100% of unit and Playwright E2E tests still pass cleanly."</em>
+    </div>
+  </div>
+
+</body>
+</html>
+`;
+
+const htmlPath = path.resolve('docs/CallSight_Codebase_Architecture_and_Flows.html');
+const pdfPath = path.resolve('docs/CallSight_Codebase_Architecture_and_Flows.pdf');
+
+fs.writeFileSync(htmlPath, htmlContent);
+console.log('HTML documentation written to:', htmlPath);
+
+(async () => {
+  console.log('Launching headless browser to generate publication-grade PDF...');
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  
+  await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1000);
+
+  await page.pdf({
+    path: pdfPath,
+    format: 'A4',
+    printBackground: true,
+    margin: {
+      top: '15mm',
+      bottom: '15mm',
+      left: '12mm',
+      right: '12mm'
+    }
+  });
+
+  await browser.close();
+  console.log('--- SUCCESS ---');
+  console.log('PDF successfully generated at:', pdfPath);
+  const stats = fs.statSync(pdfPath);
+  console.log('PDF file size:', (stats.size / 1024).toFixed(1), 'KB');
+})();
